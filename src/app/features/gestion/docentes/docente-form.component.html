@@ -41,6 +41,19 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
+        <mat-label>Fecha de Nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" [max]="maxFechaNacimiento">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched) {
+          <mat-error>Fecha de nacimiento es requerida</mat-error>
+        }
+        @if (form.get('fechaNacimiento')?.hasError('matDatepickerMax') && form.get('fechaNacimiento')?.touched) {
+          <mat-error>El docente debe tener al menos 16 años</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
         <mat-label>Teléfono</mat-label>
         <input matInput formControlName="telefono" (keydown)="onlyNumbers($event)" maxlength="10">
         @if (form.get('telefono')?.hasError('required') && form.get('telefono')?.touched) {

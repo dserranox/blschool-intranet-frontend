@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -13,34 +13,45 @@ interface MenuItem {
   selector: 'app-sidebar',
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
-    <aside class="sidebar">
+    <aside class="sidebar" [class.collapsed]="collapsed()">
       <div class="sidebar-header">
-        <img src="blschool_sidebar_logo.png" alt="British Language School" class="sidebar-logo" />
+        @if (!collapsed()) {
+          <img src="blschool_sidebar_logo.png" alt="British Language School" class="sidebar-logo" />
+        }
+        <button class="toggle-btn" (click)="onToggle()" [attr.title]="collapsed() ? 'Expandir menú' : 'Comprimir menú'">
+          <span class="toggle-icon">{{ collapsed() ? '\u2630' : '\u2630' }}</span>
+        </button>
       </div>
       <nav class="sidebar-nav">
         @for (item of menuItems; track item.label) {
           @if (item.children) {
             <div class="nav-item-group">
-              <button class="nav-item nav-toggle" (click)="toggleMenu(item.label)" [class.expanded]="expandedMenus().includes(item.label)">
+              <button class="nav-item nav-toggle" (click)="toggleMenu(item.label)" [class.expanded]="expandedMenus().includes(item.label)" [attr.title]="collapsed() ? item.label : null">
                 <span class="nav-icon">{{ item.icon }}</span>
-                <span class="nav-label">{{ item.label }}</span>
-                <span class="nav-arrow">{{ expandedMenus().includes(item.label) ? '\u25BC' : '\u25B6' }}</span>
+                @if (!collapsed()) {
+                  <span class="nav-label">{{ item.label }}</span>
+                  <span class="nav-arrow">{{ expandedMenus().includes(item.label) ? '\u25BC' : '\u25B6' }}</span>
+                }
               </button>
               @if (expandedMenus().includes(item.label)) {
                 <div class="nav-submenu">
                   @for (child of item.children; track child.label) {
-                    <a [routerLink]="child.route" routerLinkActive="active" class="nav-item nav-subitem">
+                    <a [routerLink]="child.route" routerLinkActive="active" class="nav-item nav-subitem" [attr.title]="collapsed() ? child.label : null">
                       <span class="nav-icon">{{ child.icon }}</span>
-                      <span class="nav-label">{{ child.label }}</span>
+                      @if (!collapsed()) {
+                        <span class="nav-label">{{ child.label }}</span>
+                      }
                     </a>
                   }
                 </div>
               }
             </div>
           } @else {
-            <a [routerLink]="item.route" routerLinkActive="active" class="nav-item">
+            <a [routerLink]="item.route" routerLinkActive="active" class="nav-item" [attr.title]="collapsed() ? item.label : null">
               <span class="nav-icon">{{ item.icon }}</span>
-              <span class="nav-label">{{ item.label }}</span>
+              @if (!collapsed()) {
+                <span class="nav-label">{{ item.label }}</span>
+              }
             </a>
           }
         }
@@ -58,12 +69,26 @@ interface MenuItem {
       top: 0;
       display: flex;
       flex-direction: column;
+      transition: width 0.3s ease;
+      overflow: hidden;
+    }
+
+    .sidebar.collapsed {
+      width: 70px;
     }
 
     .sidebar-header {
-      padding: 1.5rem;
+      padding: 1rem 1.5rem;
       text-align: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+      padding: 1rem 0.5rem;
     }
 
     .sidebar-logo {
@@ -72,6 +97,23 @@ interface MenuItem {
       background: rgba(255, 255, 255, 0.9);
       border-radius: 12px;
       padding: 8px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
     }
 
     .sidebar-nav {
@@ -93,6 +135,12 @@ interface MenuItem {
       text-align: left;
       cursor: pointer;
       font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .sidebar.collapsed .nav-item {
+      padding: 0.85rem 0;
+      justify-content: center;
     }
 
     .nav-item:hover {
@@ -112,6 +160,12 @@ interface MenuItem {
     .nav-icon {
       margin-right: 0.75rem;
       font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar.collapsed .nav-icon {
+      margin-right: 0;
+      font-size: 1.3rem;
     }
 
     .nav-label {
@@ -131,13 +185,23 @@ interface MenuItem {
       padding-left: 3rem;
     }
 
+    .sidebar.collapsed .nav-subitem {
+      padding-left: 0;
+    }
+
     .nav-item-group {
       margin-bottom: 0.25rem;
     }
   `]
 })
 export class SidebarComponent {
+  collapsed = input<boolean>(false);
+  collapsedChange = output<boolean>();
   expandedMenus = signal<string[]>(['Gestión']);
+
+  onToggle() {
+    this.collapsedChange.emit(!this.collapsed());
+  }
 
   menuItems: MenuItem[] = [
     { label: 'Dashboard', icon: '\uD83C\uDFE0', route: '/dashboard' },

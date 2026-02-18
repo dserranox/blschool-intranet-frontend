@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -14,8 +14,8 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [CommonModule, RouterOutlet, MatIconModule, MatButtonModule, MatTooltipModule, SidebarComponent],
   template: `
     <div class="layout">
-      <app-sidebar></app-sidebar>
-      <div class="main-content">
+      <app-sidebar [collapsed]="sidebarCollapsed()" (collapsedChange)="sidebarCollapsed.set($event)"></app-sidebar>
+      <div class="main-content" [style.margin-left]="sidebarCollapsed() ? '70px' : '250px'">
         <header class="header">
           <div class="header-left">
             <h1>{{ pageTitle() }}</h1>
@@ -43,6 +43,7 @@ import { AuthService } from '../../core/services/auth.service';
       flex: 1;
       margin-left: 250px;
       background: #f5f6fa;
+      transition: margin-left 0.3s ease;
     }
 
     .header {
@@ -84,6 +85,7 @@ export class LayoutComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   authService = inject(AuthService);
+  sidebarCollapsed = signal(false);
 
   private navigationEnd$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),

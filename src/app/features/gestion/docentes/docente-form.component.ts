@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { DocentesService } from '../../../core/services/docentes.service';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -19,7 +21,12 @@ import { AuthService } from '../../../core/services/auth.service';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    provideNativeDateAdapter()
   ],
   templateUrl: './docente-form.component.html',
   styleUrl: './docente-form.component.css'
@@ -37,6 +44,12 @@ export class DocenteFormComponent implements OnInit {
   docenteId: number | null = null;
   loading = signal(false);
   errorMessage = signal('');
+  maxFechaNacimiento: Date;
+
+  constructor() {
+    const hoy = new Date();
+    this.maxFechaNacimiento = new Date(hoy.getFullYear() - 16, hoy.getMonth(), hoy.getDate());
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -60,6 +73,7 @@ export class DocenteFormComponent implements OnInit {
       nombres: ['', Validators.required],
       apellidos: ['', Validators.required],
       dni: ['', [Validators.required, Validators.pattern(/^\d{7,9}$/)]],
+      fechaNacimiento: [null, Validators.required],
       telefono: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       direccion: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -77,6 +91,7 @@ export class DocenteFormComponent implements OnInit {
           nombres: docente.nombres,
           apellidos: docente.apellidos,
           dni: docente.dni,
+          fechaNacimiento: docente.fechaNacimiento ? new Date(docente.fechaNacimiento + 'T00:00:00') : null,
           telefono: docente.telefono,
           direccion: docente.direccion,
           email: docente.email,
@@ -115,6 +130,10 @@ export class DocenteFormComponent implements OnInit {
     this.errorMessage.set('');
 
     const data = { ...this.form.getRawValue() };
+    if (data.fechaNacimiento instanceof Date) {
+      const d = data.fechaNacimiento;
+      data.fechaNacimiento = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
     if (!this.esNuevo && (!data.password || data.password.trim() === '')) {
       delete data.password;
     }

@@ -7,6 +7,7 @@ export interface Docente {
   nombres: string;
   apellidos: string;
   dni: string;
+  fechaNacimiento: string | null;
   telefono: string;
   direccion: string;
   email: string;
