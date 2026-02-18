@@ -1,0 +1,66 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Buscar por nombre o apellido..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="filtrarDocentes()"
+    />
+    </div>
+    @if (authService.isAdmin()) {
+      <button class="btn btn-primary" (click)="nuevo()">+ Nuevo</button>
+    }
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Apellido</th>
+          <th>Nombre</th>
+          <th>Teléfono</th>
+          <th>Email</th>
+          <th class="col-comisiones">Comisiones</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (docente of filteredDocentes(); track docente.id) {
+          <tr>
+            <td>{{ docente.apellidos }}</td>
+            <td>{{ docente.nombres }}</td>
+            <td>{{ docente.telefono || '-' }}</td>
+            <td>{{ docente.email || '-' }}</td>
+            <td>{{ docente.comisiones }}</td>
+            <td class="actions">
+              <button class="btn-icon btn-icon-info" (click)="ver(docente)" title="Ver">
+                <span class="material-icons">visibility</span>
+              </button>
+              @if (puedeEditar(docente)) {
+                <button class="btn-icon btn-icon-secondary" (click)="editar(docente)" title="Editar">
+                  <span class="material-icons">edit</span>
+                </button>
+              }
+              @if (puedeEliminar(docente)) {
+                @if (docente.activo) {
+                  <button class="btn-icon btn-icon-danger" (click)="desactivar(docente)" title="Dar de baja">
+                    <span class="material-icons">delete</span>
+                  </button>
+                } @else {
+                  <button class="btn-icon btn-icon-success" (click)="activar(docente)" title="Dar de alta">
+                    <span class="material-icons">arrow_upward</span>
+                  </button>
+                }
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-message">No se encontraron docentes</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

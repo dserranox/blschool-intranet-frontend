@@ -1,0 +1,69 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background: #f5f6fa;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Quita el fondo celeste/amarillo del autofill en Chrome/Edge (Material MDC) */
+input.mat-mdc-input-element:-webkit-autofill,
+input.mat-mdc-input-element:-webkit-autofill:hover,
+input.mat-mdc-input-element:-webkit-autofill:focus,
+textarea.mat-mdc-input-element:-webkit-autofill,
+textarea.mat-mdc-input-element:-webkit-autofill:hover,
+textarea.mat-mdc-input-element:-webkit-autofill:focus,
+.mdc-text-field__input:-webkit-autofill,
+.mdc-text-field__input:-webkit-autofill:hover,
+.mdc-text-field__input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000 !important;
+  caret-color: #000 !important;
+
+  /* Lo importante: fuerza el “fondo” del autofill */
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+
+  /* hack para que Chrome no vuelva a pintar al toque */
+  transition: background-color 99999s ease-out 0s;
+}

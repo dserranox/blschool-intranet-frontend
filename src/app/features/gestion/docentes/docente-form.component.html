@@ -1,0 +1,110 @@
+<div class="page-container">
+  <div class="page-header">
+    <button mat-button class="btn-back" (click)="volver()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+    <!-- <h2>{{ esNuevo ? 'Nuevo Docente' : (esVisualizacion ? 'Detalle Docente' : 'Editar Docente') }}</h2> -->
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombres</mat-label>
+        <input matInput formControlName="nombres">
+        @if (form.get('nombres')?.hasError('required') && form.get('nombres')?.touched) {
+          <mat-error>Nombres es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellidos</mat-label>
+        <input matInput formControlName="apellidos">
+        @if (form.get('apellidos')?.hasError('required') && form.get('apellidos')?.touched) {
+          <mat-error>Apellidos es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>DNI</mat-label>
+        <input matInput formControlName="dni" (keydown)="onlyNumbers($event)" maxlength="9">
+        @if (form.get('dni')?.hasError('required') && form.get('dni')?.touched) {
+          <mat-error>DNI es requerido</mat-error>
+        }
+        @if (form.get('dni')?.hasError('pattern') && form.get('dni')?.touched) {
+          <mat-error>DNI debe tener entre 7 y 9 dígitos</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="telefono" (keydown)="onlyNumbers($event)" maxlength="10">
+        @if (form.get('telefono')?.hasError('required') && form.get('telefono')?.touched) {
+          <mat-error>Teléfono es requerido</mat-error>
+        }
+        @if (form.get('telefono')?.hasError('pattern') && form.get('telefono')?.touched) {
+          <mat-error>Teléfono debe tener 10 dígitos</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="direccion">
+        @if (form.get('direccion')?.hasError('required') && form.get('direccion')?.touched) {
+          <mat-error>Dirección es requerida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email">
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>Email es requerido</mat-error>
+        }
+        @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+          <mat-error>Email inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Usuario</mat-label>
+        <input matInput formControlName="usuario">
+        @if (form.get('usuario')?.hasError('required') && form.get('usuario')?.touched) {
+          <mat-error>Usuario es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput formControlName="password" type="password">
+        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>Contraseña es requerida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Roles</mat-label>
+        <mat-select formControlName="roles" multiple>
+          <mat-option value="DOCENTE">DOCENTE</mat-option>
+          <mat-option value="ADMIN">ADMIN</mat-option>
+        </mat-select>
+        @if (form.get('roles')?.hasError('required') && form.get('roles')?.touched) {
+          <mat-error>Debe seleccionar al menos un rol</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    @if (!esVisualizacion) {
+      <div class="form-actions">
+        <button mat-flat-button class="btn-save" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button mat-button type="button" (click)="volver()">Cancelar</button>
+      </div>
+    }
+  </form>
+</div>

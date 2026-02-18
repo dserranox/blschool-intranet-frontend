@@ -1,0 +1,46 @@
+<div class="page-container">
+  <div class="page-header">
+    <button mat-button class="btn-back" (click)="volver()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="curCodigo">
+        @if (form.get('curCodigo')?.hasError('required') && form.get('curCodigo')?.touched) {
+          <mat-error>Código es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="curNombre">
+        @if (form.get('curNombre')?.hasError('required') && form.get('curNombre')?.touched) {
+          <mat-error>Nombre es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="curDescripcion" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+    @if (!esVisualizacion) {
+      <div class="form-actions">
+        <button mat-flat-button class="btn-save" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button mat-button type="button" (click)="volver()">Cancelar</button>
+      </div>
+    }
+  </form>
+</div>
