@@ -1,0 +1,84 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="filter-bar">
+      <label class="filter-label">Estado:</label>
+      <select class="filter-select" [(ngModel)]="estadoSeleccionado" (ngModelChange)="onEstadoChange()">
+        @for (estado of estados; track estado) {
+          <option [value]="estado">{{ estado }}</option>
+        }
+      </select>
+      <input type="text" class="filter-input" placeholder="Buscar por nombre o apellido..."
+             [(ngModel)]="searchTerm" (ngModelChange)="filtrar()">
+    </div>
+    @if (authService.isAdmin()) {
+      <button class="btn btn-primary" (click)="nuevo()">+ Nuevo</button>
+    }
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Apellidos</th>
+          <th>Nombres</th>
+          <th>DNI</th>
+          <th>Fecha Nacimiento</th>
+          <th>Teléfonos</th>
+          <th>Comisión</th>
+          <th>Curso</th>
+          <th class="col-center">Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (alumno of alumnos(); track alumno.id) {
+          <tr>
+            <td>{{ alumno.apellidos }}</td>
+            <td>{{ alumno.nombres }}</td>
+            <td>{{ alumno.dni }}</td>
+            <td>{{ formatFecha(alumno.fechaNacimiento) }}</td>
+            <td class="telefonos-cell">
+              @if (alumno.telefonos && alumno.telefonos.length > 0) {
+                @for (tel of alumno.telefonos; track tel.id) {
+                  <div class="telefono-item">{{ tel.numero }} ({{ tel.tipo }})</div>
+                }
+              } @else {
+                -
+              }
+            </td>
+            <td>{{ alumno.comision || '-' }}</td>
+            <td>{{ alumno.curso || '-' }}</td>
+            <td class="col-center">
+              @if (alumno.estado === 'ACTIVO') {
+                <span class="badge badge-active">Activo</span>
+              } @else if (alumno.estado === 'INACTIVO') {
+                <span class="badge badge-inactive">Inactivo</span>
+              } @else if (alumno.estado === 'PREINSCRIPTO') {
+                <span class="badge badge-preinscripto">Preinscripto</span>
+              } @else {
+                <span class="badge">{{ alumno.estado }}</span>
+              }
+            </td>
+            <td class="actions">
+              <div class="actions-wrap">
+                <button class="btn-icon btn-icon-info" (click)="ver(alumno)" title="Ver">
+                  <span class="material-icons">visibility</span>
+                </button>
+                <button class="btn-icon btn-icon-secondary" (click)="editar(alumno)" title="Editar">
+                  <span class="material-icons">edit</span>
+                </button>
+                <button class="btn-icon btn-icon-danger" (click)="eliminar(alumno)" title="Eliminar">
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="empty-message">No se encontraron alumnos</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

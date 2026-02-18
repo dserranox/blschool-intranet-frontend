@@ -1,0 +1,81 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="filter-bar">
+      <label class="filter-label">Año:</label>
+      <select class="filter-select" [(ngModel)]="anioSeleccionado" (ngModelChange)="onAnioChange()">
+        @for (anio of anios(); track anio) {
+          <option [value]="anio">{{ anio }}</option>
+        }
+      </select>
+      <input type="text" class="filter-input" placeholder="Filtrar por curso..."
+             [(ngModel)]="searchTerm" (ngModelChange)="filtrar()">
+    </div>
+    @if (authService.isAdmin()) {
+      <button class="btn btn-primary" (click)="nuevo()">+ Nuevo</button>
+    }
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Comisión</th>
+          <th>Curso</th>
+          <th>Clases</th>
+          <th class="col-center">Cupo</th>
+          <th class="col-center">Inscriptos</th>
+          <th class="col-center">Preinscriptos</th>
+          <th class="col-center">Activa</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (comision of comisiones(); track comision.comId) {
+          <tr>
+            <td>{{ comision.nombre }}</td>
+            <td>{{ comision.cursoNombre }}</td>
+            <td class="clases-cell">
+              @if (comision.clases && comision.clases.length > 0) {
+                @for (clase of comision.clases; track clase.id) {
+                  <div class="clase-item">{{ formatClase(clase) }}</div>
+                }
+              } @else {
+                -
+              }
+            </td>
+            <td class="col-center">{{ comision.cupo }}</td>
+            <td class="col-center">{{ comision.inscriptos }}</td>
+            <td class="col-center">{{ comision.preInscriptos }}</td>
+            <td class="col-center">
+              @if (comision.activa) {
+                <span class="badge badge-active">Sí</span>
+              } @else {
+                <span class="badge badge-inactive">No</span>
+              }
+            </td>
+            <td class="actions">
+              <div class="actions-wrap">
+                <button class="btn-icon btn-icon-info" (click)="ver(comision)" title="Ver">
+                  <span class="material-icons">visibility</span>
+                </button>
+            
+                @if (authService.isAdmin()) {
+                <button class="btn-icon btn-icon-secondary" (click)="editar(comision)" title="Editar">
+                  <span class="material-icons">edit</span>
+                </button>
+                <button class="btn-icon btn-icon-danger" (click)="eliminar(comision)" title="Eliminar">
+                  <span class="material-icons">delete</span>
+                </button>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="empty-message">No se encontraron comisiones para el año seleccionado</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
