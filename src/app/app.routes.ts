@@ -23,6 +23,21 @@ export const routes: Routes = [
         data: { title: 'Alumnos' }
       },
       {
+        path: 'gestion/alumnos/nuevo',
+        loadComponent: () => import('./features/gestion/alumnos/alumno-form.component').then(m => m.AlumnoFormComponent),
+        data: { title: 'Nuevo Alumno' }
+      },
+      {
+        path: 'gestion/alumnos/editar/:id',
+        loadComponent: () => import('./features/gestion/alumnos/alumno-form.component').then(m => m.AlumnoFormComponent),
+        data: { title: 'Editar Alumno', modo: 'editar' }
+      },
+      {
+        path: 'gestion/alumnos/ver/:id',
+        loadComponent: () => import('./features/gestion/alumnos/alumno-form.component').then(m => m.AlumnoFormComponent),
+        data: { title: 'Detalle Alumno', modo: 'ver' }
+      },
+      {
         path: 'gestion/docentes',
         loadComponent: () => import('./features/gestion/docentes/docentes.component').then(m => m.DocentesComponent),
         data: { title: 'Docentes' }
@@ -66,6 +81,21 @@ export const routes: Routes = [
         path: 'gestion/comisiones',
         loadComponent: () => import('./features/gestion/comisiones/comisiones.component').then(m => m.ComisionesComponent),
         data: { title: 'Comisiones' }
+      },
+      {
+        path: 'gestion/comisiones/nuevo',
+        loadComponent: () => import('./features/gestion/comisiones/comision-form.component').then(m => m.ComisionFormComponent),
+        data: { title: 'Nueva Comisión' }
+      },
+      {
+        path: 'gestion/comisiones/editar/:id',
+        loadComponent: () => import('./features/gestion/comisiones/comision-form.component').then(m => m.ComisionFormComponent),
+        data: { title: 'Editar Comisión', modo: 'editar' }
+      },
+      {
+        path: 'gestion/comisiones/ver/:id',
+        loadComponent: () => import('./features/gestion/comisiones/comision-form.component').then(m => m.ComisionFormComponent),
+        data: { title: 'Detalle Comisión', modo: 'ver' }
       },
       {
         path: '',

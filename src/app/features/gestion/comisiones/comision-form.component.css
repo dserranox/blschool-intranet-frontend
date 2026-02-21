@@ -1,0 +1,133 @@
+.page-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-back {
+  color: #6c757d;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.5rem;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.toggle-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.toggle-label {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.clases-section {
+  margin-top: 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+}
+
+.clases-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.clases-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.btn-add-clase {
+  color: #17a2b8 !important;
+}
+
+.clase-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+
+.clase-dia {
+  flex: 0 0 140px;
+}
+
+.hora-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.hora-label {
+  font-size: 0.85rem;
+  color: #555;
+  min-width: 40px;
+}
+
+.hora-select {
+  width: 75px;
+}
+
+.hora-separator {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.clase-docente {
+  flex: 1;
+  min-width: 160px;
+}
+
+.btn-remove-clase {
+  color: #dc3545 !important;
+  flex: 0 0 auto;
+}
+
+.no-clases {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.btn-save {
+  background: #17a2b8 !important;
+  color: white !important;
+}
+
+.btn-save:hover {
+  background: #138496 !important;
+}

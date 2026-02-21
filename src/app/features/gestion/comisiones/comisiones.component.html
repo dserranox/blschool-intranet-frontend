@@ -11,7 +11,10 @@
              [(ngModel)]="searchTerm" (ngModelChange)="filtrar()">
     </div>
     @if (authService.isAdmin()) {
-      <button class="btn btn-primary" (click)="nuevo()">+ Nuevo</button>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="duplicar()" title="Duplicar comisiones del año"><span class="material-icons btn-icon-left">content_copy</span>Duplicar</button>
+        <button class="btn btn-primary" (click)="nuevo()">+ Nuevo</button>
+      </div>
     }
   </div>
 
@@ -60,12 +63,18 @@
                 </button>
             
                 @if (authService.isAdmin()) {
-                <button class="btn-icon btn-icon-secondary" (click)="editar(comision)" title="Editar">
-                  <span class="material-icons">edit</span>
-                </button>
-                <button class="btn-icon btn-icon-danger" (click)="eliminar(comision)" title="Eliminar">
-                  <span class="material-icons">delete</span>
-                </button>
+                  <button class="btn-icon btn-icon-secondary" (click)="editar(comision)" title="Editar">
+                    <span class="material-icons">edit</span>
+                  </button>
+                  @if (comision.activa) {
+                    <button class="btn-icon btn-icon-danger" (click)="darDeBaja(comision)" title="Dar de baja">
+                      <span class="material-icons">delete</span>
+                    </button>
+                  } @else {
+                    <button class="btn-icon btn-icon-success" (click)="darDeAlta(comision)" title="Dar de alta">
+                      <span class="material-icons">arrow_upward</span>
+                    </button>
+                  }
                 }
               </div>
             </td>

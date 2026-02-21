@@ -37,6 +37,16 @@ export class AuthService {
   roles = signal<string[]>(this.getStoredRoles());
   personaId = signal<number | null>(this.getStoredPersonaId());
 
+  constructor() {
+    // Al inicializar, si hay sesión activa, re-programar el auto-logout
+    if (this.isAuthenticated()) {
+      const expiresAt = this.getStoredExpiresAt();
+      if (expiresAt) {
+        this.scheduleAutoLogout(expiresAt);
+      }
+    }
+  }
+
   login(username: string, password: string) {
     return this.http.post<LoginResponse>(this.AUTH_ENDPOINT, { username, password });
   }
@@ -51,9 +61,11 @@ export class AuthService {
       username,
       permissions: resp.authorities || []
     }));
+    localStorage.setItem('expiresAt', String(resp.expiresAt));
 
     this.isAuthenticated.set(true);
     this.currentUser.set(username);
+
     this.scheduleAutoLogout(resp.expiresAt);
   }
 
@@ -83,6 +95,7 @@ export class AuthService {
     localStorage.removeItem('displayName');
     localStorage.removeItem('roles');
     localStorage.removeItem('personaId');
+    localStorage.removeItem('expiresAt');
     this.logoutSub?.unsubscribe();
     this.logoutSub = undefined;
     this.isAuthenticated.set(false);
@@ -132,6 +145,11 @@ export class AuthService {
 
   isAdmin(): boolean {
     return this.roles().includes('ADMIN');
+  }
+
+  private getStoredExpiresAt(): number | null {
+    const raw = localStorage.getItem('expiresAt');
+    return raw ? Number(raw) : null;
   }
 
   private scheduleAutoLogout(expiresAtMs: number) {

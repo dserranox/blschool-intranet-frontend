@@ -2,8 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { CursosService, Curso } from '../../../core/services/cursos.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-cursos',
@@ -14,6 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class CursosComponent implements OnInit {
   private cursosService = inject(CursosService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
   authService = inject(AuthService);
 
   searchTerm = '';
@@ -46,10 +49,21 @@ export class CursosComponent implements OnInit {
   }
 
   eliminar(curso: Curso) {
-    if (!confirm(`¿Está seguro que desea eliminar el curso "${curso.curNombre}"?`)) return;
-    this.cursosService.eliminar(curso.curId).subscribe({
-      next: () => this.cargarCursos(),
-      error: (err: any) => alert(err?.error?.message || 'Error al eliminar el curso')
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        titulo: 'Eliminar curso',
+        mensaje: `¿Está seguro que desea eliminar el curso "${curso.curNombre}"?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cursosService.eliminar(curso.curId).subscribe({
+          next: () => this.cargarCursos(),
+          error: (err: any) => alert(err?.error?.message || 'Error al eliminar el curso')
+        });
+      }
     });
   }
 }

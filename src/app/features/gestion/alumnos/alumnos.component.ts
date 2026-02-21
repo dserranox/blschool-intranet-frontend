@@ -1,8 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { AlumnosService, Alumno } from '../../../core/services/alumnos.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-alumnos',
@@ -12,15 +15,27 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class AlumnosComponent implements OnInit {
   private alumnosService = inject(AlumnosService);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
   authService = inject(AuthService);
 
-  estados = ['ACTIVO', 'INACTIVO', 'PREINSCRIPTO', 'TODOS'];
-  estadoSeleccionado = 'ACTIVO';
+  estados = ['INSCRIPTO', 'INACTIVO', 'PREINSCRIPTO', 'TODOS'];
+  estadoSeleccionado = '';
   searchTerm = '';
   todosAlumnos = signal<Alumno[]>([]);
   alumnos = signal<Alumno[]>([]);
 
+  pageSizes = [10, 20, 50, 100];
+  pageSize = signal(10);
+  currentPage = signal(0);
+  alumnosPaginados = computed(() => {
+    const start = this.currentPage() * this.pageSize();
+    return this.alumnos().slice(start, start + this.pageSize());
+  });
+  totalPages = computed(() => Math.ceil(this.alumnos().length / this.pageSize()));
+
   ngOnInit() {
+    this.estadoSeleccionado = this.alumnosService.ultimoEstado;
     this.cargarAlumnos();
   }
 
@@ -35,6 +50,7 @@ export class AlumnosComponent implements OnInit {
 
   onEstadoChange() {
     this.searchTerm = '';
+    this.alumnosService.ultimoEstado = this.estadoSeleccionado;
     this.cargarAlumnos();
   }
 
@@ -46,9 +62,27 @@ export class AlumnosComponent implements OnInit {
       this.alumnos.set(
         this.todosAlumnos().filter(a =>
           a.apellidos?.toLowerCase().includes(term) ||
-          a.nombres?.toLowerCase().includes(term)
+          a.nombres?.toLowerCase().includes(term) ||
+          a.curso?.toLowerCase().includes(term)
         )
       );
+    }
+    this.currentPage.set(0);
+  }
+
+  onPageSizeChange() {
+    this.currentPage.set(0);
+  }
+
+  paginaAnterior() {
+    if (this.currentPage() > 0) {
+      this.currentPage.update(p => p - 1);
+    }
+  }
+
+  paginaSiguiente() {
+    if (this.currentPage() < this.totalPages() - 1) {
+      this.currentPage.update(p => p + 1);
     }
   }
 
@@ -59,18 +93,32 @@ export class AlumnosComponent implements OnInit {
   }
 
   nuevo() {
-    // TODO
+    this.router.navigate(['/gestion/alumnos/nuevo']);
   }
 
   ver(alumno: Alumno) {
-    // TODO
+    this.router.navigate(['/gestion/alumnos/ver', alumno.id]);
   }
 
   editar(alumno: Alumno) {
-    // TODO
+    this.router.navigate(['/gestion/alumnos/editar', alumno.id]);
   }
 
   eliminar(alumno: Alumno) {
-    // TODO
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        titulo: 'Dar de baja',
+        mensaje: `¿Está seguro de dar de baja a ${alumno.apellidos}, ${alumno.nombres}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.alumnosService.darDeBaja(alumno.id).subscribe({
+          next: () => this.cargarAlumnos()
+        });
+      }
+    });
   }
 }

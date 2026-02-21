@@ -1,0 +1,172 @@
+<div class="page-container">
+  <div class="page-header">
+    <button mat-button class="btn-back" (click)="volver()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Apellidos</mat-label>
+        <input matInput formControlName="apellidos">
+        @if (form.get('apellidos')?.hasError('required') && form.get('apellidos')?.touched) {
+          <mat-error>Apellidos es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombres</mat-label>
+        <input matInput formControlName="nombres">
+        @if (form.get('nombres')?.hasError('required') && form.get('nombres')?.touched) {
+          <mat-error>Nombres es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>DNI</mat-label>
+        <input matInput formControlName="dni" (keydown)="onlyNumbers($event)" maxlength="9">
+        @if (form.get('dni')?.hasError('required') && form.get('dni')?.touched) {
+          <mat-error>DNI es requerido</mat-error>
+        }
+        @if (form.get('dni')?.hasError('pattern') && form.get('dni')?.touched) {
+          <mat-error>DNI debe tener entre 7 y 9 dígitos</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de Nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" [max]="maxFechaNacimiento">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched) {
+          <mat-error>Fecha de nacimiento es requerida</mat-error>
+        }
+        @if (form.get('fechaNacimiento')?.hasError('matDatepickerMax') && form.get('fechaNacimiento')?.touched) {
+          <mat-error>El alumno debe tener al menos 3 años</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email">
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>Email es requerido</mat-error>
+        }
+        @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+          <mat-error>Email inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email Alternativo</mat-label>
+        <input matInput formControlName="emailAlternativo" type="email">
+        @if (form.get('emailAlternativo')?.hasError('email') && form.get('emailAlternativo')?.touched) {
+          <mat-error>Email inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="direccion">
+        @if (form.get('direccion')?.hasError('required') && form.get('direccion')?.touched) {
+          <mat-error>Dirección es requerida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Escuela</mat-label>
+        <input matInput formControlName="escuela">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Curso</mat-label>
+        <input matInput formControlName="gradoCurso">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="estado">
+          @for (estado of estados; track estado) {
+            <mat-option [value]="estado">{{ estado }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('estado')?.hasError('required') && form.get('estado')?.touched) {
+          <mat-error>Estado es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Comisión</mat-label>
+        <mat-select formControlName="comisionId">
+          <mat-option [value]="null">-- Sin comisión --</mat-option>
+          @for (comision of comisiones(); track comision.comId) {
+            <mat-option [value]="comision.comId">{{ comision.cursoNombre }} - {{ comision.nombre }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="telefonos-section">
+      <div class="telefonos-header">
+        <h3>Teléfonos</h3>
+        @if (!esVisualizacion) {
+          <button mat-icon-button type="button" class="btn-add-tel" (click)="agregarTelefono()" title="Agregar teléfono">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        }
+      </div>
+
+      <div formArrayName="telefonos">
+        @for (tel of telefonos.controls; track tel; let i = $index) {
+          <div class="telefono-row" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="tel-numero">
+              <mat-label>Número</mat-label>
+              <input matInput formControlName="numero">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="tel-tipo">
+              <mat-label>Tipo</mat-label>
+              <mat-select formControlName="tipo">
+                @for (tipo of tiposTelefono; track tipo) {
+                  <mat-option [value]="tipo">{{ tipo }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="principal" class="tel-principal">Principal</mat-checkbox>
+
+            <mat-form-field appearance="outline" class="tel-nota">
+              <mat-label>Nota</mat-label>
+              <input matInput formControlName="nota">
+            </mat-form-field>
+
+            @if (!esVisualizacion) {
+              <button mat-icon-button type="button" class="btn-remove-tel" (click)="eliminarTelefono(i)" title="Eliminar teléfono">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      @if (telefonos.length === 0) {
+        <p class="no-telefonos">No hay teléfonos cargados</p>
+      }
+    </div>
+
+    @if (!esVisualizacion) {
+      <div class="form-actions">
+        <button mat-flat-button class="btn-save" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button mat-button type="button" (click)="volver()">Cancelar</button>
+      </div>
+    }
+  </form>
+</div>

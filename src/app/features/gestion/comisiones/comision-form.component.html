@@ -1,0 +1,170 @@
+<div class="page-container">
+  <div class="page-header">
+    <button mat-button class="btn-back" (click)="volver()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Año</mat-label>
+        <mat-select formControlName="anio">
+          @for (anio of anios; track anio) {
+            <mat-option [value]="anio">{{ anio }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('anio')?.hasError('required') && form.get('anio')?.touched) {
+          <mat-error>Año es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Curso</mat-label>
+        <mat-select formControlName="cursoId">
+          @for (curso of cursos(); track curso.curId) {
+            <mat-option [value]="curso.curId">{{ curso.curNombre }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('cursoId')?.hasError('required') && form.get('cursoId')?.touched) {
+          <mat-error>Curso es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre">
+        @if (form.get('nombre')?.hasError('required') && form.get('nombre')?.touched) {
+          <mat-error>Nombre es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Cupo</mat-label>
+        <input matInput formControlName="cupo" type="number" (keydown)="onlyNumbers($event)">
+        @if (form.get('cupo')?.hasError('required') && form.get('cupo')?.touched) {
+          <mat-error>Cupo es requerido</mat-error>
+        }
+        @if (form.get('cupo')?.hasError('min') && form.get('cupo')?.touched) {
+          <mat-error>El cupo debe ser mayor a 0</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="toggle-section">
+      <label class="toggle-label">Estado:</label>
+      <mat-button-toggle-group formControlName="activa">
+        <mat-button-toggle [value]="true">ACTIVA</mat-button-toggle>
+        <mat-button-toggle [value]="false">INACTIVA</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <div class="clases-section">
+      <div class="clases-header">
+        <h3>Clases</h3>
+        @if (!esVisualizacion) {
+          <button mat-icon-button type="button" class="btn-add-clase" (click)="agregarClase()" title="Agregar clase">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        }
+      </div>
+
+      <div formArrayName="clases">
+        @for (clase of clases.controls; track clase; let i = $index) {
+          <div class="clase-row" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="clase-dia">
+              <mat-label>Día</mat-label>
+              <mat-select formControlName="dia">
+                @for (dia of diasSemana; track dia.valor) {
+                  <mat-option [value]="dia.valor">{{ dia.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <div class="hora-group">
+              <label class="hora-label">Desde</label>
+              <mat-form-field appearance="outline" class="hora-select">
+                <mat-select formControlName="horaDesdeH">
+                  @for (h of horas; track h) {
+                    <mat-option [value]="h">{{ h.toString().padStart(2, '0') }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <span class="hora-separator">:</span>
+              <mat-form-field appearance="outline" class="hora-select">
+                <mat-select formControlName="horaDesdeM">
+                  @for (m of minutos; track m) {
+                    <mat-option [value]="m">{{ m.toString().padStart(2, '0') }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="hora-group">
+              <label class="hora-label">Hasta</label>
+              <mat-form-field appearance="outline" class="hora-select">
+                <mat-select formControlName="horaHastaH">
+                  @for (h of horas; track h) {
+                    <mat-option [value]="h">{{ h.toString().padStart(2, '0') }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <span class="hora-separator">:</span>
+              <mat-form-field appearance="outline" class="hora-select">
+                <mat-select formControlName="horaHastaM">
+                  @for (m of minutos; track m) {
+                    <mat-option [value]="m">{{ m.toString().padStart(2, '0') }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="clase-docente">
+              <mat-label>Docente</mat-label>
+              <mat-select formControlName="docente">
+                <mat-option [value]="null">-- Sin docente --</mat-option>
+                @for (doc of docentes(); track doc.id) {
+                  <mat-option [value]="doc.id">{{ doc.apellidos }}, {{ doc.nombres }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="clase-docente">
+              <mat-label>Docente Suplente</mat-label>
+              <mat-select formControlName="docenteSuplente">
+                <mat-option [value]="null">-- Sin suplente --</mat-option>
+                @for (doc of docentes(); track doc.id) {
+                  <mat-option [value]="doc.id">{{ doc.apellidos }}, {{ doc.nombres }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            @if (!esVisualizacion) {
+              <button mat-icon-button type="button" class="btn-remove-clase" (click)="eliminarClase(i)" title="Eliminar clase">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      @if (clases.length === 0) {
+        <p class="no-clases">No hay clases cargadas</p>
+      }
+    </div>
+
+    @if (!esVisualizacion) {
+      <div class="form-actions">
+        <button mat-flat-button class="btn-save" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button mat-button type="button" (click)="volver()">Cancelar</button>
+      </div>
+    }
+  </form>
+</div>

@@ -1,8 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { ComisionesService, Comision, ComisionClase } from '../../../core/services/comisiones.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-comisiones',
@@ -12,6 +15,8 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class ComisionesComponent implements OnInit {
   private comisionesService = inject(ComisionesService);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
   authService = inject(AuthService);
 
   anios = signal<number[]>([]);
@@ -33,9 +38,9 @@ export class ComisionesComponent implements OnInit {
   ngOnInit() {
     this.comisionesService.obtenerAnios().subscribe({
       next: (anios) => {
-        this.anios.set(anios);
+        this.anios.set(anios.sort((a, b) => b - a));
         if (anios.length > 0) {
-          this.anioSeleccionado = anios[anios.length - 1];
+          this.anioSeleccionado = anios[0];
           this.cargarComisiones();
         }
       }
@@ -82,18 +87,84 @@ export class ComisionesComponent implements OnInit {
   }
 
   nuevo() {
-    // TODO
+    this.router.navigate(['/gestion/comisiones/nuevo']);
   }
 
   ver(comision: Comision) {
-    // TODO
+    this.router.navigate(['/gestion/comisiones/ver', comision.comId]);
   }
 
   editar(comision: Comision) {
-    // TODO
+    this.router.navigate(['/gestion/comisiones/editar', comision.comId]);
   }
 
-  eliminar(comision: Comision) {
-    // TODO
+  duplicar() {
+    const anios = this.anios();
+    if (anios.length === 0) return;
+
+    const anioDesde = anios[0];
+    const anioHasta = anioDesde + 1;
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: {
+        titulo: 'Duplicar comisiones',
+        mensaje: `¿Desea duplicar las comisiones del año ${anioDesde} al ${anioHasta}?`,
+        botonConfirmar: 'Duplicar'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.comisionesService.duplicar(anioDesde, anioHasta).subscribe({
+          next: () => {
+            this.comisionesService.obtenerAnios().subscribe({
+              next: (anios) => {
+                this.anios.set(anios.sort((a, b) => b - a));
+                this.anioSeleccionado = anioHasta;
+                this.cargarComisiones();
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+  darDeBaja(comision: Comision) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        titulo: 'Dar de baja',
+        mensaje: `¿Está seguro de dar de baja la comisión "${comision.nombre}"?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.comisionesService.desactivar(comision.comId).subscribe({
+          next: () => this.cargarComisiones()
+        });
+      }
+    });
+  }
+
+  darDeAlta(comision: Comision) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        titulo: 'Dar de alta',
+        mensaje: `¿Está seguro de dar de alta la comisión "${comision.nombre}"?`,
+        botonConfirmar: 'Dar de alta'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.comisionesService.activar(comision.comId).subscribe({
+          next: () => this.cargarComisiones()
+        });
+      }
+    });
   }
 }
