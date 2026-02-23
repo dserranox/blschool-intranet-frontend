@@ -67,7 +67,6 @@
 .data-table td {
   padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
 }
 
 .data-table th {
@@ -78,6 +77,10 @@
 
 .data-table tr:hover {
   background: #f8f9fa;
+}
+
+.data-table tr {
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .col-comisiones,

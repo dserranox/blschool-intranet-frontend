@@ -169,6 +169,14 @@ export class AlumnoFormComponent implements OnInit {
     }
   }
 
+  onlyNumbersAndDash(event: KeyboardEvent) {
+    const allowed = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+    if (allowed.includes(event.key)) return;
+    if (!/^[\d\-]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
   guardar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

@@ -127,7 +127,7 @@
           <div class="telefono-row" [formGroupName]="i">
             <mat-form-field appearance="outline" class="tel-numero">
               <mat-label>Número</mat-label>
-              <input matInput formControlName="numero">
+              <input matInput formControlName="numero" (keydown)="onlyNumbersAndDash($event)">
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="tel-tipo">
