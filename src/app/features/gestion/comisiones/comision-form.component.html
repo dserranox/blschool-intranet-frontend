@@ -167,4 +167,64 @@
       </div>
     }
   </form>
+
+  @if (esVisualizacion) {
+    <div class="alumnos-section">
+      <h3>Alumnos inscriptos</h3>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Apellidos</th>
+              <th>Nombres</th>
+              <th>DNI</th>
+              <th>Teléfonos</th>
+              <th class="col-center">Años</th>
+              <th class="col-center">Estado</th>
+              <th class="col-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (alumno of alumnosInscriptos(); track alumno.id) {
+              <tr>
+                <td>{{ alumno.apellidos }}</td>
+                <td>{{ alumno.nombres }}</td>
+                <td>{{ alumno.dni }}</td>
+                <td class="telefonos-cell">
+                  @if (alumno.telefonos && alumno.telefonos.length > 0) {
+                    @for (tel of alumno.telefonos; track tel.id) {
+                      <div class="telefono-item">{{ tel.numero }} ({{ tel.tipo }})</div>
+                    }
+                  } @else {
+                    -
+                  }
+                </td>
+                <td class="col-center">{{ alumno.fechaNacimiento | edad }}</td>
+                <td class="col-center">
+                  @if (alumno.estado === 'INSCRIPTO') {
+                  <span class="badge badge-active">Inscripto</span>
+                  } @else if (alumno.estado === 'INACTIVO') {
+                  <span class="badge badge-inactive">Inactivo</span>
+                  } @else if (alumno.estado === 'PREINSCRIPTO') {
+                  <span class="badge badge-preinscripto">Preinscripto</span>
+                  } @else {
+                  <span class="badge">{{ alumno.estado }}</span>
+                  }
+                </td>
+                <td class="actions">
+                  <button class="btn-icon btn-icon-info" (click)="verAlumno(alumno)" title="Ver">
+                    <span class="material-icons">visibility</span>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-message">No hay alumnos inscriptos en esta comisión</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
 </div>

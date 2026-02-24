@@ -11,6 +11,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ComisionesService } from '../../../core/services/comisiones.service';
 import { CursosService, Curso } from '../../../core/services/cursos.service';
 import { DocentesService, Docente } from '../../../core/services/docentes.service';
+import { AlumnosService, Alumno } from '../../../core/services/alumnos.service';
+import { EdadPipe } from '../../../shared/edad.pipe';
 
 @Component({
   selector: 'app-comision-form',
@@ -22,7 +24,8 @@ import { DocentesService, Docente } from '../../../core/services/docentes.servic
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    EdadPipe
   ],
   templateUrl: './comision-form.component.html',
   styleUrl: './comision-form.component.css'
@@ -34,6 +37,7 @@ export class ComisionFormComponent implements OnInit {
   private comisionesService = inject(ComisionesService);
   private cursosService = inject(CursosService);
   private docentesService = inject(DocentesService);
+  private alumnosService = inject(AlumnosService);
 
   form!: FormGroup;
   esNuevo = true;
@@ -45,6 +49,7 @@ export class ComisionFormComponent implements OnInit {
   anios: number[] = [];
   cursos = signal<Curso[]>([]);
   docentes = signal<Docente[]>([]);
+  alumnosInscriptos = signal<Alumno[]>([]);
 
   diasSemana = [
     { valor: 1, nombre: 'LUNES' },
@@ -141,6 +146,7 @@ export class ComisionFormComponent implements OnInit {
 
         if (this.esVisualizacion) {
           this.form.disable();
+          this.cargarAlumnos();
         }
         this.loading.set(false);
       },
@@ -148,6 +154,12 @@ export class ComisionFormComponent implements OnInit {
         this.errorMessage.set('Error al cargar la comisión');
         this.loading.set(false);
       }
+    });
+  }
+
+  private cargarAlumnos() {
+    this.alumnosService.listarPorComision(this.comisionId!).subscribe({
+      next: (data) => this.alumnosInscriptos.set(data)
     });
   }
 
@@ -230,6 +242,10 @@ export class ComisionFormComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  verAlumno(alumno: Alumno) {
+    this.router.navigate(['/gestion/alumnos/ver', alumno.id]);
   }
 
   volver() {

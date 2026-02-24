@@ -131,3 +131,115 @@
 .btn-save:hover {
   background: #138496 !important;
 }
+
+.alumnos-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+}
+
+.alumnos-section h3 {
+  margin: 0 0 0.75rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.data-table th {
+  background: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.data-table tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table tr:hover {
+  background: #f8f9fa;
+}
+
+.col-center {
+  text-align: center !important;
+}
+
+.telefonos-cell {
+  font-size: 0.85rem;
+}
+
+.telefono-item {
+  padding: 0.15rem 0;
+  color: #555;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-preinscripto {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.data-table td.actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon .material-icons {
+  font-size: 1.25rem;
+}
+
+.btn-icon-info {
+  color: #17a2b8;
+}
+
+.btn-icon-info:hover {
+  background: rgba(23, 162, 184, 0.15);
+}
+
+.empty-message {
+  text-align: center;
+  color: #666;
+  padding: 2rem !important;
+}

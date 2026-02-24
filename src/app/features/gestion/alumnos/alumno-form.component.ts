@@ -97,6 +97,7 @@ export class AlumnoFormComponent implements OnInit {
       escuela: [''],
       gradoCurso: [''],
       estado: ['INSCRIPTO', Validators.required],
+      problemaSalud: [''],
       comisionId: [null],
       telefonos: this.fb.array([])
     });
@@ -135,6 +136,7 @@ export class AlumnoFormComponent implements OnInit {
           escuela: alumno.escuela,
           gradoCurso: alumno.gradoCurso,
           estado: alumno.estado,
+          problemaSalud: alumno.problemaSalud || '',
           comisionId: alumno.comisionId
         });
         // Cargar teléfonos

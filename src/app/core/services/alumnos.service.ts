@@ -22,6 +22,7 @@ export interface Alumno {
   escuela: string | null;
   gradoCurso: string | null;
   estado: string;
+  problemaSalud: string | null;
   comisionId: number | null;
   comision: string | null;
   curso: string | null;
@@ -40,6 +41,10 @@ export class AlumnosService {
       return this.http.get<Alumno[]>(this.endpoint, { params: { estado } });
     }
     return this.http.get<Alumno[]>(this.endpoint);
+  }
+
+  listarPorComision(comisionId: number) {
+    return this.http.get<Alumno[]>(`${this.endpoint}/comision/${comisionId}`);
   }
 
   obtenerPorId(id: number) {

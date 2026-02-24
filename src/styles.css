@@ -67,3 +67,23 @@ textarea.mat-mdc-input-element:-webkit-autofill:focus,
   /* hack para que Chrome no vuelva a pintar al toque */
   transition: background-color 99999s ease-out 0s;
 }
+
+/* Texto más oscuro en campos Material deshabilitados (modo visualización) */
+.mat-mdc-form-field.mat-form-field-disabled .mat-mdc-input-element,
+.mat-mdc-form-field.mat-form-field-disabled .mat-mdc-select-value-text,
+.mat-mdc-form-field.mat-form-field-disabled .mdc-text-field__input {
+  color: rgba(0, 0, 0, 0.75) !important;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.mat-mdc-checkbox-disabled .mdc-label {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.mat-button-toggle-disabled .mat-button-toggle-label-content {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.mat-mdc-form-field.mat-form-field-disabled .mat-mdc-floating-label {
+  color: rgba(0, 0, 0, 0.65) !important;
+}
