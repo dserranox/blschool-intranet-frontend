@@ -1,6 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import packageJson from '../../../../package.json';
 
 interface MenuItem {
   label: string;
@@ -56,6 +57,9 @@ interface MenuItem {
           }
         }
       </nav>
+      <div class="sidebar-version">
+        <span>v{{ version }}</span>
+      </div>
     </aside>
   `,
   styles: [`
@@ -192,12 +196,23 @@ interface MenuItem {
     .nav-item-group {
       margin-bottom: 0.25rem;
     }
+
+    .sidebar-version {
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.75rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   `]
 })
 export class SidebarComponent {
   collapsed = input<boolean>(false);
   collapsedChange = output<boolean>();
   expandedMenus = signal<string[]>(['Gestión']);
+  readonly version = packageJson.version;
 
   onToggle() {
     this.collapsedChange.emit(!this.collapsed());
