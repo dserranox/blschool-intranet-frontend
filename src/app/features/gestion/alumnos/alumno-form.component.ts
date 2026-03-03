@@ -174,9 +174,17 @@ export class AlumnoFormComponent implements OnInit {
   onlyNumbersAndDash(event: KeyboardEvent) {
     const allowed = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
     if (allowed.includes(event.key)) return;
+    if (event.ctrlKey || event.metaKey) return;
     if (!/^[\d\-]$/.test(event.key)) {
       event.preventDefault();
     }
+  }
+
+  onPasteTelefono(event: ClipboardEvent, index: number) {
+    event.preventDefault();
+    const text = event.clipboardData?.getData('text') ?? '';
+    const filtered = text.replace(/[^\d\-]/g, '');
+    this.telefonos.at(index).get('numero')?.setValue(filtered);
   }
 
   guardar() {
