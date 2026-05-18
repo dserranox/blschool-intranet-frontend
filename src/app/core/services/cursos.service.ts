@@ -8,6 +8,7 @@ export interface Curso {
   curNombre: string;
   curDescripcion: string;
   comisionesActivas: string[];
+  cantInscriptos: number;
 }
 
 @Injectable({ providedIn: 'root' })
