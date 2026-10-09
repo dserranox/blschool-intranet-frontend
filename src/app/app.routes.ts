@@ -38,6 +38,11 @@ export const routes: Routes = [
         data: { title: 'Detalle Alumno', modo: 'ver' }
       },
       {
+        path: 'gestion/preinscripciones',
+        loadComponent: () => import('./features/gestion/preinscripciones/preinscripciones.component').then(m => m.PreinscripcionesComponent),
+        data: { title: 'Preinscripciones' }
+      },
+      {
         path: 'gestion/docentes',
         loadComponent: () => import('./features/gestion/docentes/docentes.component').then(m => m.DocentesComponent),
         data: { title: 'Docentes' }

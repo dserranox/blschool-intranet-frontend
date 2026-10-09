@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
-import { AlumnosService } from '../../../core/services/alumnos.service';
+import { AlumnosService, AlumnoHistorial } from '../../../core/services/alumnos.service';
 import { ComisionesService, ComisionActiva } from '../../../core/services/comisiones.service';
 
 @Component({
@@ -51,6 +51,7 @@ export class AlumnoFormComponent implements OnInit {
   estados = ['INSCRIPTO', 'INACTIVO', 'PREINSCRIPTO'];
   tiposTelefono = ['MAMA', 'PAPA', 'ALUMNO', 'TUTOR'];
   comisiones = signal<ComisionActiva[]>([]);
+  historial = signal<AlumnoHistorial | null>(null);
 
   get telefonos(): FormArray {
     return this.form.get('telefonos') as FormArray;
@@ -76,7 +77,20 @@ export class AlumnoFormComponent implements OnInit {
 
     if (!this.esNuevo) {
       this.cargarAlumno();
+      this.cargarHistorial();
     }
+  }
+
+  private cargarHistorial() {
+    this.alumnosService.obtenerHistorial(this.alumnoId!).subscribe({
+      next: (data) => this.historial.set(data)
+    });
+  }
+
+  formatFecha(fecha: string | null): string {
+    if (!fecha) return '-';
+    const parts = fecha.split('T')[0].split('-');
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
 
   private cargarComisiones() {

@@ -111,7 +111,7 @@
         <mat-select formControlName="comisionId">
           <mat-option [value]="null">-- Sin comisión --</mat-option>
           @for (comision of comisiones(); track comision.comId) {
-            <mat-option [value]="comision.comId">{{ comision.cursoNombre }} - {{ comision.nombre }}</mat-option>
+            <mat-option [value]="comision.comId">{{ comision.anio }} · {{ comision.cursoNombre }} - {{ comision.nombre }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -164,6 +164,64 @@
         <p class="no-telefonos">No hay teléfonos cargados</p>
       }
     </div>
+
+    @if (historial(); as h) {
+      <div class="historial-section">
+        <h3>Historial de inscripciones</h3>
+        @if (h.inscripciones.length > 0) {
+          <table class="historial-table">
+            <thead>
+              <tr>
+                <th>Año</th>
+                <th>Curso</th>
+                <th>Comisión</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ins of h.inscripciones; track ins.id) {
+                <tr>
+                  <td>{{ ins.anio }}</td>
+                  <td>{{ ins.curso }}</td>
+                  <td>{{ ins.comision }}</td>
+                  <td>{{ ins.estado }}</td>
+                  <td>{{ formatFecha(ins.fecha) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="no-telefonos">Sin inscripciones registradas</p>
+        }
+
+        @if (h.preinscripciones.length > 0) {
+          <h3>Preinscripciones</h3>
+          <table class="historial-table">
+            <thead>
+              <tr>
+                <th>Año</th>
+                <th>Estado</th>
+                <th>Comisión asignada</th>
+                <th>Escuela / curso / turno</th>
+                <th>Fecha formulario</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pre of h.preinscripciones; track pre.id) {
+                <tr>
+                  <td>{{ pre.anio }}</td>
+                  <td>{{ pre.estado }}</td>
+                  <td>{{ pre.curso ? pre.curso + ' - ' + pre.comision : '-' }}</td>
+                  <td>{{ pre.escuelaCursoTurno || '-' }}</td>
+                  <td>{{ formatFecha(pre.fechaFormulario) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    }
 
     @if (!esVisualizacion) {
       <div class="form-actions">

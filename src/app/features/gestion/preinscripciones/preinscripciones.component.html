@@ -1,0 +1,136 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="filter-bar">
+      <label class="filter-label">Año:</label>
+      <select class="filter-select" [(ngModel)]="anioSeleccionado" (ngModelChange)="onAnioChange()">
+        @for (anio of anios(); track anio) {
+          <option [ngValue]="anio">{{ anio }}</option>
+        }
+      </select>
+      <label class="filter-label">Estado:</label>
+      <select class="filter-select" [(ngModel)]="estadoSeleccionado" (ngModelChange)="cargar()">
+        @for (estado of estados; track estado) {
+          <option [value]="estado">{{ estado }}</option>
+        }
+      </select>
+      <input type="text" class="filter-input" placeholder="Buscar por nombre, DNI, escuela o curso actual..."
+             [(ngModel)]="searchTerm" (ngModelChange)="filtrar()">
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  @if (comisiones().length === 0) {
+    <div class="info-message">
+      No hay comisiones activas para {{ anioSeleccionado }}. Crealas (o duplicalas desde el año actual) en Comisiones para poder asignar.
+    </div>
+  }
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Apellidos</th>
+          <th>Nombres</th>
+          <th>DNI</th>
+          <th>Fecha form.</th>
+          <th>Escuela / curso / turno</th>
+          <th>Curso Actual</th>
+          <th class="col-center">Estado</th>
+          <th>Comisión {{ anioSeleccionado }}</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of paginadas(); track p.id) {
+          <tr>
+            <td>
+              {{ p.apellidos }}
+              @if (p.alumnoNuevo) {
+                <span class="badge badge-nuevo" title="El alumno se creó desde el formulario: revisar nombre y apellido">Nuevo</span>
+              }
+            </td>
+            <td>{{ p.nombres }}</td>
+            <td>{{ p.dni }}</td>
+            <td>{{ formatFecha(p.fechaFormulario) }}</td>
+            <td class="col-escuela">{{ p.escuelaCursoTurno || '-' }}</td>
+            <td>{{ p.cursoAnterior ? p.cursoAnterior + ' - ' + p.comisionAnterior : '-' }}</td>
+            <td class="col-center">
+              @if (p.estado === 'PENDIENTE') {
+                <span class="badge badge-preinscripto">Pendiente</span>
+              } @else if (p.estado === 'ASIGNADA') {
+                <span class="badge badge-active">Asignada</span>
+              } @else {
+                <span class="badge badge-inactive">Descartada</span>
+              }
+            </td>
+            <td>
+              @if (authService.isAdmin()) {
+                <div class="asignar-cell">
+                  <select class="filter-select select-comision" [(ngModel)]="seleccion[p.id]">
+                    <option [ngValue]="null">-- Elegir --</option>
+                    @for (c of comisiones(); track c.comId) {
+                      <option [ngValue]="c.comId">{{ c.cursoNombre }} - {{ c.nombre }} ({{ c.inscriptos }}/{{ c.cupo }})</option>
+                    }
+                  </select>
+                  <button class="btn-icon btn-icon-secondary" (click)="asignar(p)"
+                          [disabled]="!seleccion[p.id] || seleccion[p.id] === p.comisionId" title="Asignar comisión">
+                    <span class="material-icons">check</span>
+                  </button>
+                </div>
+              } @else {
+                {{ p.curso ? p.curso + ' - ' + p.comision : '-' }}
+              }
+            </td>
+            <td class="actions">
+              <div class="actions-wrap">
+                <button class="btn-icon btn-icon-info" (click)="verAlumno(p)" title="Ver alumno">
+                  <span class="material-icons">visibility</span>
+                </button>
+                @if (authService.isAdmin()) {
+                  <button class="btn-icon btn-icon-secondary" (click)="editarAlumno(p)" title="Editar alumno">
+                    <span class="material-icons">edit</span>
+                  </button>
+                  @if (p.estado !== 'DESCARTADA') {
+                    <button class="btn-icon btn-icon-danger" (click)="descartar(p)" title="Descartar preinscripción">
+                      <span class="material-icons">delete</span>
+                    </button>
+                  }
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="empty-message">No hay preinscripciones para {{ anioSeleccionado }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (preinscripciones().length > 0) {
+    <div class="pagination-bar">
+      <div class="pagination-size">
+        <label>Mostrar:</label>
+        <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()">
+          @for (size of pageSizes; track size) {
+            <option [ngValue]="size">{{ size }}</option>
+          }
+        </select>
+        <span>de {{ preinscripciones().length }} registros</span>
+      </div>
+      <div class="pagination-nav">
+        <button class="btn-page" (click)="paginaAnterior()" [disabled]="currentPage() === 0">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <span class="page-info">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+        <button class="btn-page" (click)="paginaSiguiente()" [disabled]="currentPage() >= totalPages() - 1">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  }
+</div>

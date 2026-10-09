@@ -112,3 +112,35 @@
   font-size: 0.9rem;
   margin: 0.5rem 0;
 }
+
+.historial-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+}
+
+.historial-section h3 {
+  margin: 0 0 0.5rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.historial-table th,
+.historial-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.historial-table th {
+  background: #f8f9fa;
+  color: #555;
+  font-weight: 600;
+}

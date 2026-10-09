@@ -223,6 +223,7 @@ export class SidebarComponent {
     {
       label: 'Gestión', icon: '\uD83D\uDCCB', children: [
         { label: 'Alumnos', icon: '\uD83C\uDF93', route: '/gestion/alumnos' },
+        { label: 'Preinscripciones', icon: '\uD83D\uDCE5', route: '/gestion/preinscripciones' },
         { label: 'Docentes', icon: '\uD83D\uDC69\u200D\uD83C\uDFEB', route: '/gestion/docentes' },
         { label: 'Cursos', icon: '\uD83D\uDCDA', route: '/gestion/cursos' },
         { label: 'Comisiones', icon: '\uD83D\uDCDD', route: '/gestion/comisiones' },

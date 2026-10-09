@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { Preinscripcion } from './preinscripciones.service';
 
 export interface AlumnoTelefono {
   id: number;
@@ -25,8 +26,24 @@ export interface Alumno {
   problemaSalud: string | null;
   comisionId: number | null;
   comision: string | null;
+  comisionAnio: number | null;
   curso: string | null;
   telefonos: AlumnoTelefono[];
+}
+
+export interface InscripcionHistorial {
+  id: number;
+  anio: number;
+  comisionId: number;
+  comision: string;
+  curso: string;
+  estado: string;
+  fecha: string;
+}
+
+export interface AlumnoHistorial {
+  inscripciones: InscripcionHistorial[];
+  preinscripciones: Preinscripcion[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -49,6 +66,10 @@ export class AlumnosService {
 
   obtenerPorId(id: number) {
     return this.http.get<Alumno>(`${this.endpoint}/${id}`);
+  }
+
+  obtenerHistorial(id: number) {
+    return this.http.get<AlumnoHistorial>(`${this.endpoint}/${id}/historial`);
   }
 
   crear(data: any) {

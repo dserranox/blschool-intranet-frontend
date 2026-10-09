@@ -28,6 +28,7 @@ export interface Comision {
 
 export interface ComisionActiva {
   comId: number;
+  anio: number;
   nombre: string;
   cursoNombre: string;
 }
