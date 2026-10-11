@@ -1,6 +1,7 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 import packageJson from '../../../../package.json';
 
 interface MenuItem {
@@ -8,6 +9,8 @@ interface MenuItem {
   icon: string;
   route?: string;
   children?: MenuItem[];
+  /** Sólo visible para usuarios con rol ADMIN */
+  soloAdmin?: boolean;
 }
 
 @Component({
@@ -37,12 +40,14 @@ interface MenuItem {
               @if (expandedMenus().includes(item.label)) {
                 <div class="nav-submenu">
                   @for (child of item.children; track child.label) {
-                    <a [routerLink]="child.route" routerLinkActive="active" class="nav-item nav-subitem" [attr.title]="collapsed() ? child.label : null">
-                      <span class="nav-icon">{{ child.icon }}</span>
-                      @if (!collapsed()) {
-                        <span class="nav-label">{{ child.label }}</span>
-                      }
-                    </a>
+                    @if (!child.soloAdmin || authService.isAdmin()) {
+                      <a [routerLink]="child.route" routerLinkActive="active" class="nav-item nav-subitem" [attr.title]="collapsed() ? child.label : null">
+                        <span class="nav-icon">{{ child.icon }}</span>
+                        @if (!collapsed()) {
+                          <span class="nav-label">{{ child.label }}</span>
+                        }
+                      </a>
+                    }
                   }
                 </div>
               }
@@ -209,6 +214,7 @@ interface MenuItem {
   `]
 })
 export class SidebarComponent {
+  authService = inject(AuthService);
   collapsed = input<boolean>(false);
   collapsedChange = output<boolean>();
   expandedMenus = signal<string[]>(['Gestión']);
@@ -223,7 +229,7 @@ export class SidebarComponent {
     {
       label: 'Gestión', icon: '\uD83D\uDCCB', children: [
         { label: 'Alumnos', icon: '\uD83C\uDF93', route: '/gestion/alumnos' },
-        { label: 'Preinscripciones', icon: '\uD83D\uDCE5', route: '/gestion/preinscripciones' },
+        { label: 'Preinscripciones', icon: '\uD83D\uDCE5', route: '/gestion/preinscripciones', soloAdmin: true },
         { label: 'Docentes', icon: '\uD83D\uDC69\u200D\uD83C\uDFEB', route: '/gestion/docentes' },
         { label: 'Cursos', icon: '\uD83D\uDCDA', route: '/gestion/cursos' },
         { label: 'Comisiones', icon: '\uD83D\uDCDD', route: '/gestion/comisiones' },
