@@ -70,6 +70,18 @@ export class ComisionesService {
     return this.http.patch<void>(`${this.endpoint}/${id}/desactivar`, {});
   }
 
+  activarPorAnio(anio: number) {
+    return this.http.patch<number>(`${this.endpoint}/anio/${anio}/activar`, {});
+  }
+
+  desactivarPorAnio(anio: number) {
+    return this.http.patch<number>(`${this.endpoint}/anio/${anio}/desactivar`, {});
+  }
+
+  eliminarPorAnio(anio: number) {
+    return this.http.delete<number>(`${this.endpoint}/anio/${anio}`);
+  }
+
   duplicar(anioDesde: number, anioHasta: number) {
     return this.http.post<void>(`${this.endpoint}/duplicar`, null, {
       params: { anioDesde: anioDesde.toString(), anioHasta: anioHasta.toString() }

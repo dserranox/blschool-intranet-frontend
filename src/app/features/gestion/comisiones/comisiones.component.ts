@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 import { ComisionesService, Comision, ComisionClase } from '../../../core/services/comisiones.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-comisiones',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatMenuModule, MatIconModule],
   templateUrl: './comisiones.component.html',
   styleUrl: './comisiones.component.css'
 })
@@ -24,6 +26,8 @@ export class ComisionesComponent implements OnInit {
   searchTerm = '';
   todasComisiones = signal<Comision[]>([]);
   comisiones = signal<Comision[]>([]);
+  mensaje = signal('');
+  mensajeError = signal(false);
 
   private diasSemana: Record<number, string> = {
     1: 'LUNES',
@@ -58,6 +62,7 @@ export class ComisionesComponent implements OnInit {
 
   onAnioChange() {
     this.searchTerm = '';
+    this.mensaje.set('');
     this.cargarComisiones();
   }
 
@@ -147,6 +152,83 @@ export class ComisionesComponent implements OnInit {
         });
       }
     });
+  }
+
+  darDeAltaTodas() {
+    const anio = Number(this.anioSeleccionado);
+    this.confirmar('Dar de alta todas', `¿Dar de alta todas las comisiones de ${anio}?`, 'Dar de alta', () =>
+      this.comisionesService.activarPorAnio(anio).subscribe({
+        next: (cantidad) => this.terminarAccion(`${cantidad} comisiones de ${anio} dadas de alta.`),
+        error: (err) => this.mostrarError(err, 'Error al dar de alta las comisiones')
+      })
+    );
+  }
+
+  darDeBajaTodas() {
+    const anio = Number(this.anioSeleccionado);
+    this.confirmar('Dar de baja todas', `¿Dar de baja todas las comisiones de ${anio}?`, 'Dar de baja', () =>
+      this.comisionesService.desactivarPorAnio(anio).subscribe({
+        next: (cantidad) => this.terminarAccion(`${cantidad} comisiones de ${anio} dadas de baja.`),
+        error: (err) => this.mostrarError(err, 'Error al dar de baja las comisiones')
+      })
+    );
+  }
+
+  eliminarTodas() {
+    const anio = Number(this.anioSeleccionado);
+    const cantidad = this.todasComisiones().length;
+    this.confirmar(
+      'Eliminar comisiones',
+      `Se van a ELIMINAR definitivamente las ${cantidad} comisiones de ${anio} con sus horarios. ` +
+      `Esta acción no se puede deshacer. Sólo es posible si ninguna tiene inscripciones.`,
+      'Eliminar',
+      () => this.comisionesService.eliminarPorAnio(anio).subscribe({
+        next: (eliminadas) => {
+          this.mostrarMensaje(`${eliminadas} comisiones de ${anio} eliminadas.`);
+          this.comisionesService.obtenerAnios().subscribe({
+            next: (anios) => {
+              this.anios.set(anios.sort((a, b) => b - a));
+              this.anioSeleccionado = anios.length > 0 ? anios[0] : 0;
+              if (anios.length > 0) {
+                this.cargarComisiones();
+              } else {
+                this.todasComisiones.set([]);
+                this.filtrar();
+              }
+            }
+          });
+        },
+        error: (err) => this.mostrarError(err, err?.status === 409
+          ? `No se pueden eliminar las comisiones de ${anio} porque tienen inscripciones. Podés darlas de baja.`
+          : 'Error al eliminar las comisiones')
+      })
+    );
+  }
+
+  private confirmar(titulo: string, mensaje: string, botonConfirmar: string, accion: () => void) {
+    this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: { titulo, mensaje, botonConfirmar }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        accion();
+      }
+    });
+  }
+
+  private terminarAccion(texto: string) {
+    this.mostrarMensaje(texto);
+    this.cargarComisiones();
+  }
+
+  private mostrarMensaje(texto: string) {
+    this.mensajeError.set(false);
+    this.mensaje.set(texto);
+  }
+
+  private mostrarError(err: any, porDefecto: string) {
+    this.mensajeError.set(true);
+    this.mensaje.set(err?.status === 409 ? porDefecto : (err?.error?.message || porDefecto));
   }
 
   darDeAlta(comision: Comision) {

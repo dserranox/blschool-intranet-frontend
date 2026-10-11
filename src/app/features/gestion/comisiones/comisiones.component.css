@@ -220,3 +220,41 @@
   color: #666;
   padding: 2rem !important;
 }
+
+.btn-icon-right {
+  font-size: 1.1rem;
+  margin-left: 0.15rem;
+  vertical-align: middle;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.menu-icon-success {
+  color: #28a745;
+}
+
+.menu-icon-warning {
+  color: #e0a800;
+}
+
+.menu-icon-danger,
+.menu-text-danger {
+  color: #dc3545;
+}
+
+.mensaje {
+  background: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.mensaje.mensaje-error {
+  background: #f8d7da;
+  color: #721c24;
+}

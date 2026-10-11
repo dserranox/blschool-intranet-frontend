@@ -13,10 +13,32 @@
     @if (authService.isAdmin()) {
       <div class="header-actions">
         <button class="btn btn-secondary" (click)="duplicar()" title="Duplicar comisiones del año"><span class="material-icons btn-icon-left">content_copy</span>Duplicar</button>
+        <button class="btn btn-secondary" [matMenuTriggerFor]="menuAnio" [disabled]="todasComisiones().length === 0"
+                title="Acciones sobre todas las comisiones del año seleccionado">
+          <span class="material-icons btn-icon-left">checklist</span>Acciones {{ anioSeleccionado }}<span class="material-icons btn-icon-right">arrow_drop_down</span>
+        </button>
+        <mat-menu #menuAnio="matMenu">
+          <button mat-menu-item (click)="darDeAltaTodas()">
+            <mat-icon class="menu-icon-success">arrow_upward</mat-icon>
+            <span>Dar de alta todas las de {{ anioSeleccionado }}</span>
+          </button>
+          <button mat-menu-item (click)="darDeBajaTodas()">
+            <mat-icon class="menu-icon-warning">arrow_downward</mat-icon>
+            <span>Dar de baja todas las de {{ anioSeleccionado }}</span>
+          </button>
+          <button mat-menu-item (click)="eliminarTodas()">
+            <mat-icon class="menu-icon-danger">delete_forever</mat-icon>
+            <span class="menu-text-danger">Eliminar todas las de {{ anioSeleccionado }}</span>
+          </button>
+        </mat-menu>
         <button class="btn btn-primary" (click)="nuevo()">+ Nuevo</button>
       </div>
     }
   </div>
+
+  @if (mensaje()) {
+    <div class="mensaje" [class.mensaje-error]="mensajeError()">{{ mensaje() }}</div>
+  }
 
   <div class="table-container">
     <table class="data-table">
