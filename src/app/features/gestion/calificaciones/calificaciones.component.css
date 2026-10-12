@@ -1,0 +1,42 @@
+.select-comision {
+  min-width: 220px;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  color: #555;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tab.tab-activa {
+  color: #17a2b8;
+  border-bottom-color: #17a2b8;
+  font-weight: 600;
+}
+
+.tab:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.aviso-cambios,
+.info-message {
+  background: #fff3cd;
+  color: #856404;
+  padding: 0.6rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+}

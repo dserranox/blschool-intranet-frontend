@@ -1,0 +1,66 @@
+<div class="calificaciones-section">
+  <h3>Calificaciones</h3>
+
+  @if (cargando()) {
+    <p class="sin-datos">Cargando...</p>
+  } @else if (error()) {
+    <p class="sin-datos">{{ error() }}</p>
+  } @else if (historial().length === 0) {
+    <p class="sin-datos">Sin calificaciones registradas</p>
+  } @else {
+    <table class="historial-table resumen">
+      <thead>
+        <tr><th>Año</th><th>Curso</th><th>Comisión</th><th>Parcial</th><th>Final</th><th>Pruebas</th></tr>
+      </thead>
+      <tbody>
+        @for (h of historial(); track h.comisionId) {
+          <tr>
+            <td>{{ h.anio }}</td>
+            <td>{{ h.curso }}</td>
+            <td>{{ h.comision }}</td>
+            <td class="num">{{ resumen(h.parcial) }}</td>
+            <td class="num">{{ resumen(h.final) }}</td>
+            <td class="num">{{ h.pruebas.length }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @for (h of historial(); track h.comisionId) {
+      <div class="detalle-anio">
+        <div class="detalle-titulo">{{ h.anio }} · {{ h.curso }} - {{ h.comision }}</div>
+
+        @for (ev of [{ nombre: 'Parcial', r: h.parcial }, { nombre: 'Final', r: h.final }]; track ev.nombre) {
+          @if (ev.r; as r) {
+            <div class="detalle-linea">
+              <span class="etiqueta">{{ ev.nombre }}</span>
+              @if (r.ausente) {
+                <span>Ausente</span>
+              } @else {
+                <span>
+                  @for (l of r.logros; track l.nombre) {
+                    {{ l.nombre }} {{ l.valor !== null ? formatNota(l.valor) : '-' }}/{{ formatNota(l.peso) }}@if (!$last) { · }
+                  }
+                  → <strong>{{ resumen(r) }}</strong>
+                </span>
+              }
+            </div>
+          }
+        }
+
+        @for (etapa of [1, 2]; track etapa) {
+          @if (pruebasDeEtapa(h.pruebas, etapa).length > 0) {
+            <div class="detalle-linea">
+              <span class="etiqueta">Pruebas etapa {{ etapa }}</span>
+              <span>
+                @for (p of pruebasDeEtapa(h.pruebas, etapa); track $index) {
+                  {{ p.nombre }} ({{ formatFecha(p.fecha) }}) <strong>{{ p.ausente ? 'Ausente' : (p.nota === null ? '-' : formatNota(p.nota)) }}</strong>@if (!$last) { · }
+                }
+              </span>
+            </div>
+          }
+        }
+      </div>
+    }
+  }
+</div>

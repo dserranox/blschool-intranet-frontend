@@ -12,6 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { AlumnosService, AlumnoHistorial } from '../../../core/services/alumnos.service';
 import { ComisionesService, ComisionActiva } from '../../../core/services/comisiones.service';
+import { HistorialCalificacionesComponent } from './historial-calificaciones.component';
 
 @Component({
   selector: 'app-alumno-form',
@@ -24,7 +25,8 @@ import { ComisionesService, ComisionActiva } from '../../../core/services/comisi
     MatButtonModule,
     MatIconModule,
     MatDatepickerModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    HistorialCalificacionesComponent
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },

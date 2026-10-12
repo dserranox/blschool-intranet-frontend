@@ -223,6 +223,10 @@
       </div>
     }
 
+    @if (!esNuevo && alumnoId) {
+      <app-historial-calificaciones [alumnoId]="alumnoId" />
+    }
+
     @if (!esVisualizacion) {
       <div class="form-actions">
         <button mat-flat-button class="btn-save" type="submit" [disabled]="loading()">

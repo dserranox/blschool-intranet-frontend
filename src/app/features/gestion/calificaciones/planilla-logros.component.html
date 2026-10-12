@@ -1,0 +1,76 @@
+@if (error()) {
+  <div class="error-message">{{ error() }}</div>
+}
+@if (mensaje()) {
+  <div class="ok-message">{{ mensaje() }}</div>
+}
+
+@if (sinLogros()) {
+  <div class="info-message">
+    Configurá los logros de {{ curso() || 'este curso' }} primero (Gestión → Cursos → editar el curso).
+  </div>
+} @else if (planilla(); as p) {
+  <div class="planilla-info">
+    Pesos:
+    @for (l of p.logros; track l.id) {
+      {{ l.nombre }} {{ formatNota(l.peso) }}@if (!$last) { · }
+    }
+    — Enter baja a la fila siguiente; se puede pegar una columna desde Excel.
+  </div>
+
+  <div class="table-container">
+    <table class="data-table planilla">
+      <thead>
+        <tr>
+          <th>Alumno</th>
+          @for (l of p.logros; track l.id) {
+            <th class="col-nota">{{ l.nombre }}<div class="peso">/ {{ formatNota(l.peso) }}</div></th>
+          }
+          <th class="col-center">Final Mark</th>
+          <th class="col-center">Ausente</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of filas; track f.alumnoId; let r = $index) {
+          <tr [class.fila-inactiva]="!f.editable" [class.fila-modificada]="modificada(f)">
+            <td>
+              {{ f.apellidos }}, {{ f.nombres }}
+              @if (!f.editable) {
+                <span class="nota-baja">(ya no está en la comisión)</span>
+              }
+            </td>
+            @for (l of p.logros; track l.id; let c = $index) {
+              <td class="col-nota">
+                <input class="celda" [id]="'celda-' + tipo() + '-' + r + '-' + c"
+                       [(ngModel)]="f.valores[l.id]" [disabled]="!f.editable || f.ausente"
+                       [class.celda-error]="celdaInvalida(f, l)" inputmode="decimal" autocomplete="off"
+                       (keydown.enter)="$event.preventDefault(); moverAbajo(r, c)"
+                       (paste)="pegar($event, r, l.id)">
+              </td>
+            }
+            <td class="col-center nota-final">{{ f.ausente ? 'Ausente' : (formatNota(notaFila(f)) || '-') }}</td>
+            <td class="col-center">
+              <input type="checkbox" [(ngModel)]="f.ausente" [disabled]="!f.editable">
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="p.logros.length + 3" class="empty-message">La comisión no tiene alumnos inscriptos</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="planilla-acciones">
+    @if (hayErrores()) {
+      <span class="texto-error">Hay valores fuera de rango (marcados en rojo)</span>
+    }
+    @if (hayCambios()) {
+      <button class="btn btn-secondary" (click)="descartar()" [disabled]="guardando()">Descartar cambios</button>
+    }
+    <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando() || !hayCambios() || hayErrores()">
+      {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+    </button>
+  </div>
+}

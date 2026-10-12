@@ -1,0 +1,65 @@
+.calificaciones-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+}
+
+.calificaciones-section h3 {
+  margin: 0 0 0.5rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.historial-table th,
+.historial-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.historial-table th {
+  background: #f8f9fa;
+  color: #555;
+  font-weight: 600;
+}
+
+.historial-table td.num {
+  text-align: center;
+}
+
+.detalle-anio {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.detalle-titulo {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.4rem;
+}
+
+.detalle-linea {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.2rem 0;
+}
+
+.etiqueta {
+  min-width: 120px;
+  color: #666;
+}
+
+.sin-datos {
+  color: #888;
+  font-style: italic;
+}

@@ -1,0 +1,43 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="filter-bar">
+      <label class="filter-label">Año:</label>
+      <select class="filter-select" [ngModel]="anio()" (ngModelChange)="cambiarAnio($event)" [disabled]="hayCambios()">
+        @for (a of anios(); track a) {
+          <option [ngValue]="a">{{ a }}</option>
+        }
+      </select>
+      <label class="filter-label">Comisión:</label>
+      <select class="filter-select select-comision" [ngModel]="comisionId()" (ngModelChange)="comisionId.set($event)"
+              [disabled]="hayCambios()">
+        <option [ngValue]="null">-- Elegir --</option>
+        @for (c of comisiones(); track c.comId) {
+          <option [ngValue]="c.comId">{{ c.cursoNombre }} - {{ c.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (hayCambios()) {
+    <div class="aviso-cambios">Hay cambios sin guardar: guardalos o descartalos para cambiar de comisión o pestaña.</div>
+  }
+
+  @if (!cargando() && comisiones().length === 0) {
+    <div class="info-message">No tenés comisiones para calificar en {{ anio() }}.</div>
+  }
+
+  @if (comisionSeleccionada(); as comision) {
+    <div class="tabs">
+      @for (t of pestanias; track t.id) {
+        <button class="tab" [class.tab-activa]="pestania() === t.id" (click)="pestania.set(t.id)"
+                [disabled]="hayCambios() && pestania() !== t.id">{{ t.label }}</button>
+      }
+    </div>
+
+    @if (pestania() === 'PRUEBAS') {
+      <app-planilla-pruebas [comisionId]="comision.comId" />
+    } @else {
+      <app-planilla-logros [comisionId]="comision.comId" [tipo]="tipoLogros()" [curso]="comision.cursoNombre" />
+    }
+  }
+</div>

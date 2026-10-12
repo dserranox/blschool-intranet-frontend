@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, loginGuard } from './core/guards/auth.guard';
+import { cambiosSinGuardarGuard } from './core/guards/cambios-sin-guardar.guard';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,12 @@ export const routes: Routes = [
         path: 'gestion/preinscripciones',
         loadComponent: () => import('./features/gestion/preinscripciones/preinscripciones.component').then(m => m.PreinscripcionesComponent),
         data: { title: 'Preinscripciones' }
+      },
+      {
+        path: 'gestion/calificaciones',
+        loadComponent: () => import('./features/gestion/calificaciones/calificaciones.component').then(m => m.CalificacionesComponent),
+        canDeactivate: [cambiosSinGuardarGuard],
+        data: { title: 'Calificaciones' }
       },
       {
         path: 'gestion/docentes',

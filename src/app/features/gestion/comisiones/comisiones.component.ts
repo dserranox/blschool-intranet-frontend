@@ -199,7 +199,7 @@ export class ComisionesComponent implements OnInit {
           });
         },
         error: (err) => this.mostrarError(err, err?.status === 409
-          ? `No se pueden eliminar las comisiones de ${anio} porque tienen inscripciones. Podés darlas de baja.`
+          ? `No se pueden eliminar las comisiones de ${anio} porque tienen inscripciones o calificaciones. Podés darlas de baja.`
           : 'Error al eliminar las comisiones')
       })
     );

@@ -49,3 +49,82 @@
 .btn-save:hover {
   background: #138496 !important;
 }
+
+.logros-section {
+  margin-top: 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1rem;
+}
+
+.logros-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.logros-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.copiar-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.logros-table {
+  width: 100%;
+  max-width: 640px;
+  border-collapse: collapse;
+}
+
+.logros-table th,
+.logros-table td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.logro-input {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.col-peso {
+  width: 110px;
+}
+
+.peso-input {
+  text-align: right;
+}
+
+.col-acciones {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.logros-total {
+  margin: 0.5rem 0;
+  font-weight: 600;
+  color: #155724;
+}
+
+.logros-total.total-error {
+  color: #721c24;
+}
+
+.sin-logros {
+  color: #888;
+  font-style: italic;
+}
+
+.btn-add-logro {
+  color: #17a2b8 !important;
+}

@@ -11,6 +11,13 @@ export interface Curso {
   cantInscriptos: number;
 }
 
+export interface LogroCurso {
+  id?: number;
+  nombre: string;
+  peso: number;
+  orden?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CursosService {
   private http = inject(HttpClient);
@@ -38,5 +45,13 @@ export class CursosService {
 
   eliminar(id: number) {
     return this.http.delete<void>(`${this.endpoint}/${id}`);
+  }
+
+  obtenerLogros(cursoId: number) {
+    return this.http.get<LogroCurso[]>(`${this.endpoint}/${cursoId}/logros`);
+  }
+
+  guardarLogros(cursoId: number, logros: LogroCurso[]) {
+    return this.http.put<LogroCurso[]>(`${this.endpoint}/${cursoId}/logros`, logros);
   }
 }

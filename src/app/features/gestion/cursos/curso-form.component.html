@@ -34,6 +34,60 @@
       </mat-form-field>
     </div>
 
+    <div class="logros-section">
+      <div class="logros-header">
+        <h3>Logros de evaluación (Parcial y Final)</h3>
+        @if (authService.isAdmin() && !esVisualizacion && otrosCursos().length > 0) {
+          <select #copiar class="copiar-select" (change)="copiarDesde(copiar)">
+            <option value="">Copiar logros de otro curso...</option>
+            @for (c of otrosCursos(); track c.curId) {
+              <option [value]="c.curId">{{ c.curNombre }}</option>
+            }
+          </select>
+        }
+      </div>
+
+      @if (logros.length > 0) {
+        <table class="logros-table">
+          <thead>
+            <tr><th>Logro</th><th class="col-peso">Peso %</th>@if (authService.isAdmin() && !esVisualizacion) {<th></th>}</tr>
+          </thead>
+          <tbody>
+            @for (logro of logros; track $index; let i = $index; let primero = $first; let ultimo = $last) {
+              <tr>
+                <td>
+                  <input class="logro-input" [(ngModel)]="logro.nombre" [ngModelOptions]="{ standalone: true }"
+                         [disabled]="!authService.isAdmin() || esVisualizacion" placeholder="Ej. Listening" (keydown.enter)="$event.preventDefault()">
+                </td>
+                <td class="col-peso">
+                  <input class="logro-input peso-input" [(ngModel)]="logro.peso" [ngModelOptions]="{ standalone: true }"
+                         [disabled]="!authService.isAdmin() || esVisualizacion" inputmode="decimal" (keydown.enter)="$event.preventDefault()">
+                </td>
+                @if (authService.isAdmin() && !esVisualizacion) {
+                  <td class="col-acciones">
+                    <button mat-icon-button type="button" (click)="moverLogro(i, -1)" [disabled]="primero" title="Subir"><mat-icon>arrow_upward</mat-icon></button>
+                    <button mat-icon-button type="button" (click)="moverLogro(i, 1)" [disabled]="ultimo" title="Bajar"><mat-icon>arrow_downward</mat-icon></button>
+                    <button mat-icon-button type="button" (click)="eliminarLogro(i)" title="Eliminar"><mat-icon>delete</mat-icon></button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+        <div class="logros-total" [class.total-error]="errorLogros()">
+          Total: {{ formatNota(totalLogros()) }} {{ errorLogros() ? '— ' + errorLogros() : '✔' }}
+        </div>
+      } @else {
+        <p class="sin-logros">Sin logros configurados: el Parcial y el Final de este curso no se pueden cargar todavía.</p>
+      }
+
+      @if (authService.isAdmin() && !esVisualizacion) {
+        <button mat-button type="button" class="btn-add-logro" (click)="agregarLogro()">
+          <mat-icon>add</mat-icon> Agregar logro
+        </button>
+      }
+    </div>
+
     @if (!esVisualizacion) {
       <div class="form-actions">
         <button mat-flat-button class="btn-save" type="submit" [disabled]="loading()">

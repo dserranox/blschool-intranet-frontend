@@ -1,0 +1,134 @@
+.planilla-info {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.planilla th.col-nota,
+.planilla td.col-nota {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.planilla .peso {
+  font-weight: normal;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.celda {
+  width: 70px;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: right;
+  font-size: 0.95rem;
+}
+
+.celda:focus {
+  outline: 2px solid #17a2b8;
+  border-color: #17a2b8;
+}
+
+.celda:disabled {
+  background: #f3f3f3;
+  color: #999;
+}
+
+.celda.celda-error {
+  border-color: #dc3545;
+  background: #fdecea;
+}
+
+.nota-final {
+  font-weight: 600;
+}
+
+.fila-inactiva td {
+  color: #999;
+}
+
+.fila-modificada td:first-child {
+  border-left: 3px solid #17a2b8;
+}
+
+.nota-baja {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.planilla-acciones {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.texto-error {
+  color: #721c24;
+  font-size: 0.9rem;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.error-message,
+.ok-message,
+.info-message {
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.ok-message {
+  background: #d4edda;
+  color: #155724;
+}
+
+.info-message {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.prueba-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.prueba-acciones button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0 0.15rem;
+}
+
+.prueba-acciones button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.prueba-acciones .material-icons {
+  font-size: 1rem;
+}
+
+.planilla-acciones-arriba {
+  justify-content: space-between;
+  margin: 0 0 0.75rem;
+}
