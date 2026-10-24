@@ -1,5 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import packageJson from '../../../../package.json';
@@ -15,7 +14,7 @@ interface MenuItem {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   template: `
     <aside class="sidebar" [class.collapsed]="collapsed()">
       <div class="sidebar-header">
@@ -67,6 +66,7 @@ interface MenuItem {
       </div>
     </aside>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .sidebar {
       width: 250px;

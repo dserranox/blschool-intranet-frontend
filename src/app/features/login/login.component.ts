@@ -1,5 +1,4 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +10,6 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-login',
   imports: [
-    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -19,6 +17,7 @@ import { AuthService } from '../../core/services/auth.service';
     MatButtonModule
   ],
   templateUrl: './login.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login.component.css'
 })
 export class LoginComponent {

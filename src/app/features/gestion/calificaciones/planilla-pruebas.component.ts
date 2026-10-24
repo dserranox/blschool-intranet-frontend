@@ -1,5 +1,4 @@
-import { Component, effect, inject, input, signal, untracked } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, effect, inject, input, signal, untracked, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +8,7 @@ import {
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 import { formatNota, fueraDeRango, parseNota, parsePegado } from '../../../shared/notas.util';
 import { PruebaDialogComponent } from './prueba-dialog.component';
+import { PlanillaLogrosComponent } from './planilla-logros.component';
 
 interface FilaEditable {
   alumnoId: number;
@@ -22,8 +22,9 @@ interface FilaEditable {
 
 @Component({
   selector: 'app-planilla-pruebas',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule, PlanillaLogrosComponent],
   templateUrl: './planilla-pruebas.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../alumnos/alumnos.component.css', './planilla.css']
 })
 export class PlanillaPruebasComponent {
@@ -31,19 +32,36 @@ export class PlanillaPruebasComponent {
   private dialog = inject(MatDialog);
 
   comisionId = input.required<number>();
+  curso = input<string>('');
 
   planilla = signal<PlanillaPruebas | null>(null);
   filas: FilaEditable[] = [];
   guardando = signal(false);
   error = signal('');
   mensaje = signal('');
+  /** Year/First: prueba abierta en su planilla de logros */
+  pruebaAbierta = signal<Prueba | null>(null);
+  private planillaPrueba = viewChild(PlanillaLogrosComponent);
   private carga?: Subscription;
 
   constructor() {
     effect(() => {
       const comisionId = this.comisionId();
-      untracked(() => this.cargar(comisionId));
+      untracked(() => {
+        this.pruebaAbierta.set(null);
+        this.cargar(comisionId);
+      });
     });
+  }
+
+  abrirPrueba(prueba: Prueba) {
+    this.pruebaAbierta.set(prueba);
+  }
+
+  /** Vuelve al resumen de pruebas y lo recarga para reflejar las notas guardadas. */
+  volverAPruebas() {
+    this.pruebaAbierta.set(null);
+    this.cargar(this.comisionId());
   }
 
   private cargar(comisionId: number) {
@@ -87,7 +105,7 @@ export class PlanillaPruebasComponent {
   }
 
   hayCambios(): boolean {
-    return this.filas.some(f => this.modificada(f));
+    return !!this.planillaPrueba()?.hayCambios() || this.filas.some(f => this.modificada(f));
   }
 
   celdaInvalida(fila: FilaEditable, pruebaId: number): boolean {

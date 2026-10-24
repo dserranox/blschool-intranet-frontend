@@ -1,5 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -11,7 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule, RouterOutlet, MatIconModule, MatButtonModule, MatTooltipModule, SidebarComponent],
+  imports: [RouterOutlet, MatIconModule, MatButtonModule, MatTooltipModule, SidebarComponent],
   template: `
     <div class="layout">
       <app-sidebar [collapsed]="sidebarCollapsed()" (collapsedChange)="sidebarCollapsed.set($event)"></app-sidebar>
@@ -33,6 +32,7 @@ import { AuthService } from '../../core/services/auth.service';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .layout {
       display: flex;

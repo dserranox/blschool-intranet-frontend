@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +14,6 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-docente-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -29,6 +27,7 @@ import { AuthService } from '../../../core/services/auth.service';
     provideNativeDateAdapter()
   ],
   templateUrl: './docente-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './docente-form.component.css'
 })
 export class DocenteFormComponent implements OnInit {

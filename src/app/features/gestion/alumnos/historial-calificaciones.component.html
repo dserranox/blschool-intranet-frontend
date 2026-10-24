@@ -54,7 +54,13 @@
               <span class="etiqueta">Pruebas etapa {{ etapa }}</span>
               <span>
                 @for (p of pruebasDeEtapa(h.pruebas, etapa); track $index) {
-                  {{ p.nombre }} ({{ formatFecha(p.fecha) }}) <strong>{{ p.ausente ? 'Ausente' : (p.nota === null ? '-' : formatNota(p.nota)) }}</strong>@if (!$last) { · }
+                  {{ p.nombre }} ({{ formatFecha(p.fecha) }})
+                  @if (!p.ausente && p.logros.length > 0) {
+                    <span class="aportes">[@for (l of p.logros; track l.nombre) {
+                      {{ l.nombre }} {{ l.valor !== null ? formatNota(l.valor) : '-' }}/{{ formatNota(l.peso) }}@if (!$last) { · }
+                    }]</span>
+                  }
+                  <strong>{{ p.ausente ? 'Ausente' : (p.nota === null ? '-' : formatNota(p.nota)) }}</strong>@if (!$last) { · }
                 }
               </span>
             </div>

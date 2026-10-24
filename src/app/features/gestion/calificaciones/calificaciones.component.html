@@ -35,7 +35,7 @@
     </div>
 
     @if (pestania() === 'PRUEBAS') {
-      <app-planilla-pruebas [comisionId]="comision.comId" />
+      <app-planilla-pruebas [comisionId]="comision.comId" [curso]="comision.cursoNombre" />
     } @else {
       <app-planilla-logros [comisionId]="comision.comId" [tipo]="tipoLogros()" [curso]="comision.cursoNombre" />
     }

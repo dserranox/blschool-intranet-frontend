@@ -40,7 +40,8 @@
   background: #fdecea;
 }
 
-.nota-final {
+.nota-final,
+.celda-final {
   font-weight: 600;
 }
 
@@ -131,4 +132,21 @@
 .planilla-acciones-arriba {
   justify-content: space-between;
   margin: 0 0 0.75rem;
+}
+
+.nota-solo-lectura {
+  font-weight: 600;
+}
+
+.prueba-abierta-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.icono-inline {
+  font-size: 1rem;
+  vertical-align: middle;
 }

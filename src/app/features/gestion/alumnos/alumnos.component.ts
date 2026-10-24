@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,8 +8,9 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component
 
 @Component({
   selector: 'app-alumnos',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './alumnos.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './alumnos.component.css'
 })
 export class AlumnosComponent implements OnInit {

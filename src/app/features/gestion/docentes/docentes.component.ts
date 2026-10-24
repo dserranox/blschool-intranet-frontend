@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DocentesService, Docente } from '../../../core/services/docentes.service';
@@ -7,8 +6,9 @@ import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-docentes',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './docentes.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './docentes.component.css'
 })
 export class DocentesComponent implements OnInit {

@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +12,6 @@ import { formatNota, parseNota } from '../../../shared/notas.util';
 @Component({
   selector: 'app-curso-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
@@ -22,6 +20,7 @@ import { formatNota, parseNota } from '../../../shared/notas.util';
     MatIconModule
   ],
   templateUrl: './curso-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './curso-form.component.css'
 })
 export class CursoFormComponent implements OnInit {

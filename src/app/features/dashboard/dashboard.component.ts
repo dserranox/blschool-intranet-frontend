@@ -1,10 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="dashboard">
       <h2>Bienvenido al Sistema de Gestión</h2>
@@ -40,6 +39,7 @@ import { DashboardService, DashboardStats } from '../../core/services/dashboard.
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .dashboard h2 {
       color: #2c3e50;

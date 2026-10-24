@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,8 +10,9 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component
 
 @Component({
   selector: 'app-comisiones',
-  imports: [CommonModule, FormsModule, MatMenuModule, MatIconModule],
+  imports: [FormsModule, MatMenuModule, MatIconModule],
   templateUrl: './comisiones.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './comisiones.component.css'
 })
 export class ComisionesComponent implements OnInit {

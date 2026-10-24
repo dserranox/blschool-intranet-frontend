@@ -16,6 +16,9 @@
       {{ l.nombre }} {{ formatNota(l.peso) }}@if (!$last) { · }
     }
     — Enter baja a la fila siguiente; se puede pegar una columna desde Excel.
+    @if (p.notaManual) {
+      <br>Podés cargar los logros <strong>o</strong> el Final Mark directo (0 a 100), no ambos.
+    }
   </div>
 
   <div class="table-container">
@@ -42,13 +45,23 @@
             @for (l of p.logros; track l.id; let c = $index) {
               <td class="col-nota">
                 <input class="celda" [id]="'celda-' + tipo() + '-' + r + '-' + c"
-                       [(ngModel)]="f.valores[l.id]" [disabled]="!f.editable || f.ausente"
+                       [(ngModel)]="f.valores[l.id]" [disabled]="!f.editable || f.ausente || tieneNotaManual(f)"
                        [class.celda-error]="celdaInvalida(f, l)" inputmode="decimal" autocomplete="off"
                        (keydown.enter)="$event.preventDefault(); moverAbajo(r, c)"
                        (paste)="pegar($event, r, l.id)">
               </td>
             }
-            <td class="col-center nota-final">{{ f.ausente ? 'Ausente' : (formatNota(notaFila(f)) || '-') }}</td>
+            @if (p.notaManual && f.editable && !f.ausente && !tieneAportes(f)) {
+              <td class="col-nota">
+                <input class="celda celda-final" [id]="'celda-' + tipo() + '-' + r + '-nota'"
+                       [(ngModel)]="f.notaManual" [class.celda-error]="notaManualInvalida(f)"
+                       inputmode="decimal" autocomplete="off" placeholder="-" title="Final Mark a mano (0 a 100)"
+                       (keydown.enter)="$event.preventDefault(); moverAbajo(r, 'nota')"
+                       (paste)="pegar($event, r, null)">
+              </td>
+            } @else {
+              <td class="col-center nota-final">{{ f.ausente ? 'Ausente' : (formatNota(notaFila(f)) || '-') }}</td>
+            }
             <td class="col-center">
               <input type="checkbox" [(ngModel)]="f.ausente" [disabled]="!f.editable">
             </td>

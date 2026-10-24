@@ -20,11 +20,11 @@ describe('notas.util', () => {
   });
 
   it('fueraDeRango: vacío no es error; NaN, negativos y mayores al máximo sí', () => {
-    expect(fueraDeRango(null, 25)).toBeFalse();
-    expect(fueraDeRango(25, 25)).toBeFalse();
-    expect(fueraDeRango(25.01, 25)).toBeTrue();
-    expect(fueraDeRango(-1, 25)).toBeTrue();
-    expect(fueraDeRango(NaN, 25)).toBeTrue();
+    expect(fueraDeRango(null, 25)).toBe(false);
+    expect(fueraDeRango(25, 25)).toBe(false);
+    expect(fueraDeRango(25.01, 25)).toBe(true);
+    expect(fueraDeRango(-1, 25)).toBe(true);
+    expect(fueraDeRango(NaN, 25)).toBe(true);
   });
 
   it('parsePegado toma la primera columna de cada línea', () => {

@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +16,6 @@ import { HistorialCalificacionesComponent } from './historial-calificaciones.com
 @Component({
   selector: 'app-alumno-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -33,6 +31,7 @@ import { HistorialCalificacionesComponent } from './historial-calificaciones.com
     provideNativeDateAdapter()
   ],
   templateUrl: './alumno-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './alumno-form.component.css'
 })
 export class AlumnoFormComponent implements OnInit {

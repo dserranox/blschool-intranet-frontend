@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +16,6 @@ import { EdadPipe } from '../../../shared/edad.pipe';
 @Component({
   selector: 'app-comision-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -28,6 +26,7 @@ import { EdadPipe } from '../../../shared/edad.pipe';
     EdadPipe
   ],
   templateUrl: './comision-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './comision-form.component.css'
 })
 export class ComisionFormComponent implements OnInit {

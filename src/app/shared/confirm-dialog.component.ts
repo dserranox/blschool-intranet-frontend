@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
@@ -22,6 +22,7 @@ export interface ConfirmDialogData {
       <button mat-flat-button class="btn-confirm" (click)="dialogRef.close(true)">{{ data.botonConfirmar || 'Confirmar' }}</button>
     </mat-dialog-actions>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .btn-confirm {
       background: #dc3545 !important;

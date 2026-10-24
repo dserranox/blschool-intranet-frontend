@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,8 +9,9 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component
 
 @Component({
   selector: 'app-preinscripciones',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './preinscripciones.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../alumnos/alumnos.component.css', './preinscripciones.component.css']
 })
 export class PreinscripcionesComponent implements OnInit {

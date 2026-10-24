@@ -1,5 +1,4 @@
-import { Component, HostListener, OnInit, computed, inject, signal, viewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnInit, computed, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComisionesService } from '../../../core/services/comisiones.service';
 import { CalificacionesService, ComisionCalificable, TipoLogros } from '../../../core/services/calificaciones.service';
@@ -11,8 +10,9 @@ type Pestania = TipoLogros | 'PRUEBAS';
 
 @Component({
   selector: 'app-calificaciones',
-  imports: [CommonModule, FormsModule, PlanillaLogrosComponent, PlanillaPruebasComponent],
+  imports: [FormsModule, PlanillaLogrosComponent, PlanillaPruebasComponent],
   templateUrl: './calificaciones.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../alumnos/alumnos.component.css', './calificaciones.component.css']
 })
 export class CalificacionesComponent implements OnInit, ConCambiosSinGuardar {

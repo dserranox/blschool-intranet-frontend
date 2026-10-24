@@ -1,5 +1,4 @@
-import { Component, effect, inject, input, signal, untracked } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, effect, inject, input, signal, untracked, ChangeDetectionStrategy } from '@angular/core';
 import {
   CalificacionesComision, CalificacionesService, ResultadoEvaluacion, ResultadoPrueba
 } from '../../../core/services/calificaciones.service';
@@ -7,8 +6,9 @@ import { formatNota } from '../../../shared/notas.util';
 
 @Component({
   selector: 'app-historial-calificaciones',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './historial-calificaciones.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './historial-calificaciones.component.css'
 })
 export class HistorialCalificacionesComponent {

@@ -1,76 +1,99 @@
-@if (error()) {
-  <div class="error-message">{{ error() }}</div>
-}
-@if (mensaje()) {
-  <div class="ok-message">{{ mensaje() }}</div>
-}
-
-@if (planilla(); as p) {
-  <div class="planilla-acciones planilla-acciones-arriba">
-    <span class="planilla-info">Nota de 0 a 100 · escribí <strong>A</strong> para Ausente · Enter baja · se puede pegar desde Excel.</span>
-    <button class="btn btn-primary" (click)="nuevaPrueba()" [disabled]="hayCambios()"
-            [title]="hayCambios() ? 'Guardá o descartá los cambios primero' : 'Agregar una prueba'">+ Nueva prueba</button>
+@if (pruebaAbierta(); as abierta) {
+  <div class="prueba-abierta-titulo">
+    <button class="btn btn-secondary" (click)="volverAPruebas()" [disabled]="hayCambios()"
+            [title]="hayCambios() ? 'Guardá o descartá los cambios primero' : 'Volver a la lista de pruebas'">← Pruebas</button>
+    <span>{{ abierta.nombre }} · {{ formatFecha(abierta.fecha) }} · Etapa {{ abierta.etapa }}</span>
   </div>
+  <app-planilla-logros [comisionId]="comisionId()" tipo="PRUEBA" [pruebaId]="abierta.id" [curso]="curso()" />
+} @else {
+  @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  }
+  @if (mensaje()) {
+    <div class="ok-message">{{ mensaje() }}</div>
+  }
 
-  @if (p.pruebas.length === 0) {
-    <div class="info-message">Todavía no hay pruebas en esta comisión. Creá la primera con "+ Nueva prueba".</div>
-  } @else {
-    <div class="table-container">
-      <table class="data-table planilla">
-        <thead>
-          <tr>
-            <th>Alumno</th>
-            @for (prueba of p.pruebas; track prueba.id) {
-              <th class="col-nota">
-                <div class="prueba-header">
-                  <span>{{ prueba.nombre }}</span>
-                  <span class="peso">{{ formatFecha(prueba.fecha) }} · Etapa {{ prueba.etapa }}</span>
-                  <span class="prueba-acciones">
-                    <button (click)="editarPrueba(prueba)" [disabled]="hayCambios()" title="Editar prueba"><span class="material-icons">edit</span></button>
-                    <button (click)="eliminarPrueba(prueba)" [disabled]="hayCambios()" title="Eliminar prueba"><span class="material-icons">delete</span></button>
-                  </span>
-                </div>
-              </th>
-            }
-          </tr>
-        </thead>
-        <tbody>
-          @for (f of filas; track f.alumnoId; let r = $index) {
-            <tr [class.fila-inactiva]="!f.editable" [class.fila-modificada]="modificada(f)">
-              <td>
-                {{ f.apellidos }}, {{ f.nombres }}
-                @if (!f.editable) {
-                  <span class="nota-baja">(ya no está en la comisión)</span>
-                }
-              </td>
-              @for (prueba of p.pruebas; track prueba.id; let c = $index) {
-                <td class="col-nota">
-                  <input class="celda" [id]="'celda-prueba-' + r + '-' + c" [(ngModel)]="f.celdas[prueba.id]"
-                         [disabled]="!f.editable" [class.celda-error]="celdaInvalida(f, prueba.id)"
-                         autocomplete="off" (keydown.enter)="$event.preventDefault(); moverAbajo(r, c)"
-                         (paste)="pegar($event, r, prueba.id)">
-                </td>
+  @if (planilla(); as p) {
+    <div class="planilla-acciones planilla-acciones-arriba">
+      @if (p.porLogros) {
+        <span class="planilla-info">Cada prueba se califica por logros o con el Final Mark directo: tocá
+          <span class="material-icons icono-inline">edit_note</span> para cargar sus notas.</span>
+      } @else {
+        <span class="planilla-info">Nota de 0 a 100 · escribí <strong>A</strong> para Ausente · Enter baja · se puede pegar desde Excel.</span>
+      }
+      <button class="btn btn-primary" (click)="nuevaPrueba()" [disabled]="hayCambios()"
+              [title]="hayCambios() ? 'Guardá o descartá los cambios primero' : 'Agregar una prueba'">+ Nueva prueba</button>
+    </div>
+
+    @if (p.pruebas.length === 0) {
+      <div class="info-message">Todavía no hay pruebas en esta comisión. Creá la primera con "+ Nueva prueba".</div>
+    } @else {
+      <div class="table-container">
+        <table class="data-table planilla">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              @for (prueba of p.pruebas; track prueba.id) {
+                <th class="col-nota">
+                  <div class="prueba-header">
+                    <span>{{ prueba.nombre }}</span>
+                    <span class="peso">{{ formatFecha(prueba.fecha) }} · Etapa {{ prueba.etapa }}</span>
+                    <span class="prueba-acciones">
+                      @if (p.porLogros) {
+                        <button (click)="abrirPrueba(prueba)" title="Cargar notas por logros"><span class="material-icons">edit_note</span></button>
+                      }
+                      <button (click)="editarPrueba(prueba)" [disabled]="hayCambios()" title="Editar prueba"><span class="material-icons">edit</span></button>
+                      <button (click)="eliminarPrueba(prueba)" [disabled]="hayCambios()" title="Eliminar prueba"><span class="material-icons">delete</span></button>
+                    </span>
+                  </div>
+                </th>
               }
             </tr>
-          } @empty {
-            <tr>
-              <td [attr.colspan]="p.pruebas.length + 1" class="empty-message">La comisión no tiene alumnos inscriptos</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (f of filas; track f.alumnoId; let r = $index) {
+              <tr [class.fila-inactiva]="!f.editable" [class.fila-modificada]="modificada(f)">
+                <td>
+                  {{ f.apellidos }}, {{ f.nombres }}
+                  @if (!f.editable) {
+                    <span class="nota-baja">(ya no está en la comisión)</span>
+                  }
+                </td>
+                @for (prueba of p.pruebas; track prueba.id; let c = $index) {
+                  @if (p.porLogros) {
+                    <td class="col-center nota-solo-lectura">{{ f.celdas[prueba.id] === 'A' ? 'Ausente' : (f.celdas[prueba.id] || '-') }}</td>
+                  } @else {
+                    <td class="col-nota">
+                      <input class="celda" [id]="'celda-prueba-' + r + '-' + c" [(ngModel)]="f.celdas[prueba.id]"
+                             [disabled]="!f.editable" [class.celda-error]="celdaInvalida(f, prueba.id)"
+                             autocomplete="off" (keydown.enter)="$event.preventDefault(); moverAbajo(r, c)"
+                             (paste)="pegar($event, r, prueba.id)">
+                    </td>
+                  }
+                }
+              </tr>
+            } @empty {
+              <tr>
+                <td [attr.colspan]="p.pruebas.length + 1" class="empty-message">La comisión no tiene alumnos inscriptos</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
-    <div class="planilla-acciones">
-      @if (hayErrores()) {
-        <span class="texto-error">Hay notas fuera de rango (marcadas en rojo)</span>
+      @if (!p.porLogros) {
+        <div class="planilla-acciones">
+          @if (hayErrores()) {
+            <span class="texto-error">Hay notas fuera de rango (marcadas en rojo)</span>
+          }
+          @if (hayCambios()) {
+            <button class="btn btn-secondary" (click)="descartar()" [disabled]="guardando()">Descartar cambios</button>
+          }
+          <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando() || !hayCambios() || hayErrores()">
+            {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
       }
-      @if (hayCambios()) {
-        <button class="btn btn-secondary" (click)="descartar()" [disabled]="guardando()">Descartar cambios</button>
-      }
-      <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando() || !hayCambios() || hayErrores()">
-        {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
-      </button>
-    </div>
+    }
   }
 }
